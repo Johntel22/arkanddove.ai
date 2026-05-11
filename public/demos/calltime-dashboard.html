@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calltime Dashboard | Ark &amp; Dove Campaigns</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="demo-styles.css">
+</head>
+<body>
+  <div class="demo-page">
+    <a href="/#services" class="demo-back">&larr; Back to Services</a>
+    <div class="demo-header">
+      <h1>Fundraising &amp; Calltime</h1>
+      <p>Goal setting, accountability, and real-time tracking. Set your fundraising targets, track every call, and know exactly whether you're on pace.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Track Every Call</h3>
+          <p class="step__text">Log calls as they happen. Track pledges, amounts, follow-ups, and call notes. The candidate and finance team see the same numbers in real time.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <table class="mock-table">
+              <thead><tr style="opacity:1;animation:none"><th>Contact</th><th>Amount</th><th>Status</th><th>Time</th></tr></thead>
+              <tbody>
+                <tr><td>A. Martinez</td><td>$500</td><td><span class="tag tag--green">Pledged</span></td><td>2:14 PM</td></tr>
+                <tr><td>R. Thompson</td><td>$250</td><td><span class="tag tag--green">Pledged</span></td><td>2:08 PM</td></tr>
+                <tr><td>J. Williams</td><td>--</td><td><span class="tag tag--gold">Follow Up</span></td><td>1:55 PM</td></tr>
+                <tr><td>M. Davis</td><td>$1,000</td><td><span class="tag tag--green">Pledged</span></td><td>1:42 PM</td></tr>
+                <tr><td>K. Johnson</td><td>--</td><td><span class="tag tag--blue">Left VM</span></td><td>1:30 PM</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">2</div>
+          <h3 class="step__title">Daily Performance</h3>
+          <p class="step__text">See how each calling session performs. Daily totals, pledge-to-close rates, and weekly trends at a glance.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.75rem">This Week</div>
+            <div style="display:flex;align-items:flex-end;height:120px;border-bottom:1px solid var(--gray-200);padding-bottom:4px;margin-bottom:0.5rem">
+              <div style="flex:1;text-align:center"><div class="chart-bar" style="--h:40px;animation-delay:0.3s"></div><div style="font-size:0.6rem;color:var(--gray-400);margin-top:4px">Mon</div></div>
+              <div style="flex:1;text-align:center"><div class="chart-bar" style="--h:70px;animation-delay:0.5s"></div><div style="font-size:0.6rem;color:var(--gray-400);margin-top:4px">Tue</div></div>
+              <div style="flex:1;text-align:center"><div class="chart-bar" style="--h:55px;animation-delay:0.7s"></div><div style="font-size:0.6rem;color:var(--gray-400);margin-top:4px">Wed</div></div>
+              <div style="flex:1;text-align:center"><div class="chart-bar" style="--h:90px;animation-delay:0.9s"></div><div style="font-size:0.6rem;color:var(--gray-400);margin-top:4px">Thu</div></div>
+              <div style="flex:1;text-align:center"><div class="chart-bar" style="--h:110px;animation-delay:1.1s;background:var(--green)"></div><div style="font-size:0.6rem;color:var(--gray-400);margin-top:4px">Fri</div></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat"><div class="stat__value">$12,450</div><div class="stat__label">Total Pledged</div></div>
+              <div class="stat"><div class="stat__value">67%</div><div class="stat__label">Close Rate</div></div>
+              <div class="stat"><div class="stat__value">43</div><div class="stat__label">Calls Made</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">3</div>
+          <h3 class="step__title">Goal Setting &amp; Accountability</h3>
+          <p class="step__text">Set weekly, monthly, and full-cycle fundraising goals. The dashboard holds your team accountable with live progress bars. Your candidate sees exactly where they stand and what's left to raise.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;margin-bottom:1rem">Fundraising Goals</div>
+            <div style="margin-bottom:1rem">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px"><span>Weekly Goal</span><span style="font-weight:700">$8,200 / $10,000</span></div>
+              <div class="progress-bar"><div class="progress-bar__fill" style="--w:82%;background:var(--blue);animation-delay:0.3s"></div></div>
+            </div>
+            <div style="margin-bottom:1rem">
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px"><span>Monthly Goal</span><span style="font-weight:700">$28,500 / $40,000</span></div>
+              <div class="progress-bar"><div class="progress-bar__fill" style="--w:71%;background:var(--gold);animation-delay:0.6s"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px"><span>Cycle Goal</span><span style="font-weight:700">$142,000 / $250,000</span></div>
+              <div class="progress-bar"><div class="progress-bar__fill" style="--w:57%;background:var(--green);animation-delay:0.9s"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-cta">
+      <h2>Stop Guessing, Start Tracking</h2>
+      <p>Calltime dashboards included in the Full Suite and Custom packages.</p>
+      <a href="/#contact" class="btn">Start Your Campaign</a>
+    </div>
+  </div>
+</body>
+</html>

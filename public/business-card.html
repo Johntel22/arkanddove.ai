@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ark &amp; Dove Campaigns - Business Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #F1F5F9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 3rem;
+      padding: 2rem;
+    }
+
+    h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Standard US business card: 3.5 x 2 inches at 300dpi = 1050 x 600px */
+    /* Displayed at 1:1 on screen at 96dpi scale */
+    .card {
+      width: 3.5in;
+      height: 2in;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      position: relative;
+    }
+
+    /* ---- FRONT ---- */
+    .card-front {
+      background: #0A2540;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.35in 0.3in;
+    }
+
+    .card-front__top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-front__logo {
+      display: flex;
+      align-items: center;
+      gap: 0.12in;
+    }
+
+    .card-front__mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 14pt;
+      font-weight: 800;
+      color: white;
+      background: #2B7DE9;
+      width: 0.35in;
+      height: 0.35in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+
+    .card-front__brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 8pt;
+      font-weight: 700;
+      line-height: 1.25;
+      color: white;
+    }
+
+    .card-front__tagline {
+      font-size: 5.5pt;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #2B7DE9;
+      margin-top: 0.04in;
+    }
+
+    .card-front__person {
+      margin-top: auto;
+    }
+
+    .card-front__name {
+      font-family: 'Playfair Display', serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.02in;
+    }
+
+    .card-front__title {
+      font-size: 6.5pt;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .card-front__accent {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 1.2in;
+      height: 0.8in;
+      background: #2B7DE9;
+      opacity: 0.06;
+      border-radius: 50% 0 0 0;
+    }
+
+    /* ---- BACK ---- */
+    .card-back {
+      background: white;
+      color: #0A2540;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0.3in;
+    }
+
+    .card-back__info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.06in;
+    }
+
+    .card-back__row {
+      display: flex;
+      align-items: center;
+      gap: 0.08in;
+      font-size: 6.5pt;
+      color: #475569;
+    }
+
+    .card-back__row svg {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+      color: #2B7DE9;
+    }
+
+    .card-back__divider {
+      width: 0.5in;
+      height: 2px;
+      background: #2B7DE9;
+      margin: 0.12in 0;
+      border-radius: 1px;
+    }
+
+    .card-back__footer {
+      display: flex;
+      align-items: center;
+      gap: 0.08in;
+      margin-top: 0.12in;
+    }
+
+    .card-back__footer-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 8pt;
+      font-weight: 800;
+      color: white;
+      background: #0A2540;
+      width: 0.22in;
+      height: 0.22in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+    }
+
+    .card-back__footer-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 6.5pt;
+      font-weight: 700;
+      color: #0A2540;
+    }
+
+    .card-back__footer-sub {
+      font-size: 5pt;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+
+    @media print {
+      body { background: white; gap: 0.5in; }
+      .card { box-shadow: none; border: 0.5pt solid #E2E8F0; }
+      h2 { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Front</h2>
+  <div class="card card-front">
+    <div class="card-front__top">
+      <div class="card-front__logo">
+        <div class="card-front__mark">A&amp;D</div>
+        <div>
+          <div class="card-front__brand">Ark &amp; Dove<br>Campaigns</div>
+          <div class="card-front__tagline">State &amp; Local Campaign Services</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-front__person">
+      <div class="card-front__name">Johntel Greene</div>
+      <div class="card-front__title">Founder &amp; CEO</div>
+    </div>
+    <div class="card-front__accent"></div>
+  </div>
+
+  <h2>Back</h2>
+  <div class="card card-back">
+    <div class="card-back__info">
+      <div class="card-back__row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+        <span>johntel@goodgov.ai</span>
+      </div>
+      <div class="card-back__row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        <span>(443) 253-4876</span>
+      </div>
+      <div class="card-back__row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span>arkandovecampaigns.com</span>
+      </div>
+    </div>
+    <div class="card-back__divider"></div>
+    <div class="card-back__footer">
+      <div class="card-back__footer-mark">A&amp;D</div>
+      <div>
+        <div class="card-back__footer-text">Ark &amp; Dove Campaigns, LLC</div>
+        <div class="card-back__footer-sub">Annapolis, MD</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

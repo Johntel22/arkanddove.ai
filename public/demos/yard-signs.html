@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yard Sign &amp; Logo Generator | Ark &amp; Dove Campaigns</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="demo-styles.css">
+  <style>
+    .sign-preview { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; }
+    .sign-card { text-align:center; }
+    .sign-label { font-size:0.7rem; color:var(--gray-400); margin-top:0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <a href="/#services" class="demo-back">&larr; Back to Services</a>
+    <div class="demo-header">
+      <h1>Yard Sign &amp; Logo Generator</h1>
+      <p>Professional campaign logos and print-ready yard sign designs, same day. Pick your colors, get your files.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Choose Your Colors &amp; Style</h3>
+          <p class="step__text">Pick from proven color combinations or bring your own brand. Enter your name, office, and tagline. See the preview update live.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <div class="mock-input">Candidate Name: Sarah Chen</div>
+            <div class="mock-input">Office: City Council District 4</div>
+            <div style="font-size:0.75rem;font-weight:600;color:var(--gray-400);margin:0.5rem 0">Color Palette</div>
+            <div class="swatch-row">
+              <div class="swatch active" style="background:#1E3A5F"></div>
+              <div class="swatch" style="background:#B91C1C"></div>
+              <div class="swatch" style="background:#065F46"></div>
+              <div class="swatch" style="background:#7C3AED"></div>
+              <div class="swatch" style="background:#C2410C"></div>
+            </div>
+            <div style="margin-top:1rem;text-align:center">
+              <div class="yard-sign" style="background:#1E3A5F;color:white;border:4px solid #F59E0B" id="sign-preview">
+                <div class="yard-sign__name">CHEN</div>
+                <div class="yard-sign__office">City Council District 4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">2</div>
+          <h3 class="step__title">Multiple Sizes &amp; Formats</h3>
+          <p class="step__text">Standard 18x24 yard signs, 4x8 banners, bumper stickers, and button designs. All generated from the same template, all print-ready.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <div class="sign-preview">
+              <div class="sign-card">
+                <div class="yard-sign" style="background:#1E3A5F;color:white;border:3px solid #F59E0B;width:160px;height:110px">
+                  <div style="font-size:1.1rem;font-weight:800">CHEN</div>
+                  <div style="font-size:0.5rem;letter-spacing:0.08em;opacity:0.85">CITY COUNCIL</div>
+                </div>
+                <div class="sign-label">18x24 Yard Sign</div>
+              </div>
+              <div class="sign-card">
+                <div class="yard-sign" style="background:#1E3A5F;color:white;border:2px solid #F59E0B;width:200px;height:60px;border-radius:4px">
+                  <div style="font-size:0.8rem;font-weight:800">SARAH CHEN FOR CITY COUNCIL</div>
+                </div>
+                <div class="sign-label">Bumper Sticker</div>
+              </div>
+              <div class="sign-card">
+                <div class="yard-sign" style="background:#1E3A5F;color:white;border:2px solid #F59E0B;width:60px;height:60px;border-radius:50%">
+                  <div style="font-size:0.55rem;font-weight:800">CHEN</div>
+                  <div style="font-size:0.35rem;opacity:0.85">2026</div>
+                </div>
+                <div class="sign-label">Button</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step__info">
+          <div class="step__number">3</div>
+          <h3 class="step__title">Download &amp; Print</h3>
+          <p class="step__text">Get print-ready PDF, PNG, and SVG files. Send directly to your printer or use our recommended vendors for fast turnaround.</p>
+        </div>
+        <div class="mockup">
+          <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
+          <div class="mockup__body">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;margin-bottom:0.75rem">Export Files</div>
+            <table class="mock-table">
+              <tbody>
+                <tr><td>yard-sign-18x24.pdf</td><td><span class="tag tag--green">Ready</span></td><td><span class="mock-btn" style="font-size:0.65rem;padding:3px 10px">Download</span></td></tr>
+                <tr><td>bumper-sticker.pdf</td><td><span class="tag tag--green">Ready</span></td><td><span class="mock-btn" style="font-size:0.65rem;padding:3px 10px">Download</span></td></tr>
+                <tr><td>logo-full-color.svg</td><td><span class="tag tag--green">Ready</span></td><td><span class="mock-btn" style="font-size:0.65rem;padding:3px 10px">Download</span></td></tr>
+                <tr><td>social-profile-pic.png</td><td><span class="tag tag--green">Ready</span></td><td><span class="mock-btn" style="font-size:0.65rem;padding:3px 10px">Download</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-cta">
+      <h2>Professional Signs, Same Day</h2>
+      <p>Yard sign and logo generator included in Full Suite and Custom packages.</p>
+      <a href="/#contact" class="btn">Start Your Campaign</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Client Intake - Ark &amp; Dove Campaigns</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0A2540;
+      --blue: #2B7DE9;
+      --white: #FFFFFF;
+      --gray-100: #F5F7FA;
+      --gray-200: #E8ECF2;
+      --gray-400: #9BA8BB;
+      --gray-600: #5A6A7E;
+      --gray-800: #2D3748;
+      --error: #C0392B;
+      --success-bg: #EBF5FB;
+      --success-border: #2B7DE9;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* --- Header --- */
+    .site-header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 28px 24px 24px;
+      text-align: center;
+      border-bottom: 3px solid var(--blue);
+    }
+
+    .site-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--white);
+    }
+
+    .site-header .subtitle {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    .site-header .tagline {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 8px;
+    }
+
+    /* --- Main layout --- */
+    .container {
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* --- Intro card --- */
+    .intro-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-left: 4px solid var(--blue);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      font-size: 0.93rem;
+      color: var(--gray-600);
+    }
+
+    .intro-card strong {
+      color: var(--navy);
+    }
+
+    /* --- Section --- */
+    .form-section {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 14px 24px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .section-body {
+      padding: 24px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .field-grid.three-col {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    /* --- Field --- */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.01em;
+    }
+
+    label .req {
+      color: var(--blue);
+      margin-left: 2px;
+    }
+
+    label .hint {
+      font-weight: 400;
+      color: var(--gray-400);
+      font-size: 0.78rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="date"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--gray-200);
+      font-size: 0.9rem;
+      color: var(--gray-800);
+      font-family: inherit;
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    input[type="url"]:focus,
+    input[type="date"]:focus,
+    input[type="password"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(43, 125, 233, 0.12);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235A6A7E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    textarea.tall {
+      min-height: 130px;
+    }
+
+    /* --- Color picker row --- */
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="color"] {
+      width: 44px;
+      height: 38px;
+      border: 1px solid var(--gray-200);
+      padding: 2px;
+      cursor: pointer;
+      background: var(--white);
+      flex-shrink: 0;
+    }
+
+    .color-hex {
+      flex: 1;
+    }
+
+    /* --- Checkbox --- */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-row label {
+      font-weight: 400;
+      color: var(--gray-600);
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    /* --- Section note --- */
+    .section-note {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: var(--gray-100);
+      border-left: 3px solid var(--gray-200);
+    }
+
+    /* --- Drive note --- */
+    .drive-note {
+      padding: 16px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    .drive-note strong {
+      color: var(--navy);
+    }
+
+    /* --- Submit --- */
+    .submit-area {
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    button[type="submit"] {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 16px 36px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.15s;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    button[type="submit"]:hover {
+      background: #1e6fd4;
+    }
+
+    button[type="submit"]:active {
+      background: #1860bd;
+    }
+
+    button[type="submit"]:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+    }
+
+    .required-note {
+      font-size: 0.8rem;
+      color: var(--gray-400);
+      margin-top: 10px;
+    }
+
+    /* --- Success --- */
+    #success-message {
+      display: none;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-top: 4px solid var(--blue);
+      padding: 40px 36px;
+      text-align: left;
+    }
+
+    #success-message h2 {
+      color: var(--navy);
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+
+    #success-message p {
+      color: var(--gray-600);
+      font-size: 0.93rem;
+      margin-bottom: 20px;
+    }
+
+    #success-message ol {
+      padding-left: 20px;
+      color: var(--gray-700);
+      font-size: 0.93rem;
+      line-height: 1.9;
+    }
+
+    #success-message ol li {
+      margin-bottom: 8px;
+    }
+
+    .success-contact {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.88rem;
+      color: var(--gray-600);
+    }
+
+    .success-contact a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    /* --- Error --- */
+    .form-error {
+      display: none;
+      background: #FDF2F2;
+      border: 1px solid #E8B4B4;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      color: var(--error);
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    /* --- Footer --- */
+    .site-footer {
+      background: var(--navy);
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      margin-top: 40px;
+    }
+
+    .site-footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+    }
+
+    .site-footer a:hover {
+      color: var(--white);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 600px) {
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-grid.three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .section-body {
+        padding: 18px 16px;
+      }
+
+      .site-header h1 {
+        font-size: 1.4rem;
+      }
+
+      button[type="submit"] {
+        font-size: 0.92rem;
+        padding: 15px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>Ark &amp; Dove Campaigns</h1>
+    <div class="subtitle">Campaign Operations Platform</div>
+    <div class="tagline">Your campaign deserves the same tools the big races use.</div>
+  </header>
+
+  <main class="container">
+
+    <div class="intro-card">
+      <strong>Welcome.</strong> Fill out this form once and we handle the rest. Within 24 hours, your campaign website, dashboard, and full operations stack will be live and ready.
+    </div>
+
+    <form id="intake-form" novalidate>
+
+      <!-- SECTION 1: Campaign Basics -->
+      <div class="form-section">
+        <div class="section-header">Section 1 - Campaign Basics</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field field-full">
+              <label for="candidate_name">Candidate Full Name <span class="req">*</span></label>
+              <input type="text" id="candidate_name" name="candidate_name" required autocomplete="name" />
+            </div>
+
+            <div class="field">
+              <label for="office">Office Running For <span class="req">*</span></label>
+              <select id="office" name="office" required>
+                <option value="">-- Select Office --</option>
+                <option>State Delegate</option>
+                <option>State Senator</option>
+                <option>County Executive</option>
+                <option>County Council</option>
+                <option>City Council</option>
+                <option>Mayor</option>
+                <option>School Board</option>
+                <option>Judge</option>
+                <option>Clerk of Court</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field" id="office-other-field" style="display:none;">
+              <label for="office_other">Specify Office <span class="req">*</span></label>
+              <input type="text" id="office_other" name="office_other" placeholder="e.g. Register of Wills" />
+            </div>
+
+            <div class="field">
+              <label for="district">District / Jurisdiction <span class="req">*</span> <span class="hint">e.g. District 42 or Anne Arundel County</span></label>
+              <input type="text" id="district" name="district" required />
+            </div>
+
+            <div class="field">
+              <label for="state">State <span class="req">*</span></label>
+              <select id="state" name="state" required>
+                <option value="">-- Select State --</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
+                <option>District of Columbia</option>
+                <option>Florida</option>
+                <option>Georgia</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option>Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option>Nevada</option>
+                <option>New Hampshire</option>
+                <option>New Jersey</option>
+                <option>New Mexico</option>
+                <option>New York</option>
+                <option>North Carolina</option>
+                <option>North Dakota</option>
+                <option>Ohio</option>
+                <option>Oklahoma</option>
+                <option>Oregon</option>
+                <option>Pennsylvania</option>
+                <option>Rhode Island</option>
+                <option>South Carolina</option>
+                <option>South Dakota</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Utah</option>
+                <option>Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="election_date">Election Date <span class="req">*</span></label>
+              <input type="date" id="election_date" name="election_date" required />
+            </div>
+
+            <div class="field">
+              <label for="party">Party Affiliation</label>
+              <select id="party" name="party">
+                <option value="">-- Select Party --</option>
+                <option>Democrat</option>
+                <option>Republican</option>
+                <option>Independent</option>
+                <option>Green</option>
+                <option>Libertarian</option>
+                <option>Nonpartisan</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Campaign Team -->
+      <div class="form-section">
+        <div class="section-header">Section 2 - Campaign Team</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field">
+              <label for="manager_name">Campaign Manager Name</label>
+              <input type="text" id="manager_name" name="manager_name" />
+            </div>
+
+            <div class="field">
+              <label for="manager_email">Campaign Manager Email</label>
+              <input type="email" id="manager_email" name="manager_email" />
+            </div>
+
+            <div class="field">
+              <label for="manager_phone">Campaign Manager Phone</label>
+              <input type="tel" id="manager_phone" name="manager_phone" placeholder="(555) 555-5555" />
+            </div>
+
+            <div class="field">
+              <label for="treasurer_name">Treasurer Name <span class="req">*</span></label>
+              <input type="text" id="treasurer_name" name="treasurer_name" required />
+            </div>
+
+            <div class="field">
+              <label for="campaign_email">Campaign Email <span class="req">*</span> <span class="hint">public-facing</span></label>
+              <input type="email" id="campaign_email" name="campaign_email" required />
+            </div>
+
+            <div class="field">
+              <label for="campaign_phone">Campaign Phone</label>
+              <input type="tel" id="campaign_phone" name="campaign_phone" placeholder="(555) 555-5555" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: About the Candidate -->
+      <div class="form-section">
+        <div class="section-header">Section 3 - About the Candidate</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field field-full">
+              <label for="bio">Short Bio <span class="req">*</span> <span class="hint">2-3 paragraphs about the candidate - who they are, why they're running</span></label>
+              <textarea id="bio" name="bio" class="tall" required></textarea>
+            </div>
+
+            <div class="field field-full">
+              <label for="top_issues">Top Issues <span class="req">*</span> <span class="hint">List your top 3-5 issues with a brief description of each</span></label>
+              <textarea id="top_issues" name="top_issues" class="tall" required></textarea>
+            </div>
+
+            <div class="field">
+              <label for="tagline">Campaign Tagline <span class="hint">e.g. "For the People"</span></label>
+              <input type="text" id="tagline" name="tagline" />
+            </div>
+
+            <div class="field">
+              <label for="authority_line">Authority Line <span class="req">*</span> <span class="hint">e.g. "By authority: Jane Doe for Delegate; John Smith, Treasurer"</span></label>
+              <input type="text" id="authority_line" name="authority_line" required />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Brand & Design -->
+      <div class="form-section">
+        <div class="section-header">Section 4 - Brand &amp; Design</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field">
+              <label for="color_primary">Primary Color</label>
+              <div class="color-row">
+                <input type="color" id="color_primary" name="color_primary" value="#0A2540" />
+                <input type="text" class="color-hex" id="color_primary_hex" name="color_primary_hex" value="#0A2540" maxlength="7" placeholder="#0A2540" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="color_accent">Accent Color</label>
+              <div class="color-row">
+                <input type="color" id="color_accent" name="color_accent" value="#2B7DE9" />
+                <input type="text" class="color-hex" id="color_accent_hex" name="color_accent_hex" value="#2B7DE9" maxlength="7" placeholder="#2B7DE9" />
+              </div>
+            </div>
+
+            <div class="field field-full">
+              <div class="checkbox-row">
+                <input type="checkbox" id="let_us_choose_colors" name="let_us_choose_colors" value="yes" />
+                <label for="let_us_choose_colors">Or let us choose colors for you</label>
+              </div>
+            </div>
+
+            <div class="field field-full">
+              <label>Logo &amp; Photos</label>
+              <div class="drive-note">
+                <strong>We'll set up a shared Google Drive folder for you to upload your logo, headshot, and campaign photos.</strong> You'll receive the folder link in your welcome email. No upload needed right now.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: Online Presence -->
+      <div class="form-section">
+        <div class="section-header">Section 5 - Online Presence</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field">
+              <label for="donation_link">Donation Link <span class="hint">e.g. ActBlue URL</span></label>
+              <input type="url" id="donation_link" name="donation_link" placeholder="https://" />
+            </div>
+
+            <div class="field">
+              <label for="existing_website">Existing Website URL <span class="hint">if any</span></label>
+              <input type="url" id="existing_website" name="existing_website" placeholder="https://" />
+            </div>
+
+            <div class="field">
+              <label for="facebook_url">Facebook Page URL</label>
+              <input type="url" id="facebook_url" name="facebook_url" placeholder="https://facebook.com/..." />
+            </div>
+
+            <div class="field">
+              <label for="instagram_handle">Instagram Handle</label>
+              <input type="text" id="instagram_handle" name="instagram_handle" placeholder="@handle" />
+            </div>
+
+            <div class="field">
+              <label for="twitter_handle">X (Twitter) Handle</label>
+              <input type="text" id="twitter_handle" name="twitter_handle" placeholder="@handle" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 6: Integrations -->
+      <div class="form-section">
+        <div class="section-header">Section 6 - Integrations (Optional)</div>
+        <div class="section-body">
+          <div class="section-note">
+            If you already use any of these tools, share your credentials so we can connect them to your dashboard. If not, no worries - we can set them up later.
+          </div>
+          <div class="field-grid">
+
+            <div class="field">
+              <label for="switchboard_account_id">Switchboard Account ID</label>
+              <input type="text" id="switchboard_account_id" name="switchboard_account_id" />
+            </div>
+
+            <div class="field">
+              <label for="switchboard_secret_key">Switchboard Secret Key</label>
+              <input type="password" id="switchboard_secret_key" name="switchboard_secret_key" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="ghl_api_key">GoHighLevel API Key</label>
+              <input type="password" id="ghl_api_key" name="ghl_api_key" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="van_api_key">VAN / VoteBuilder API Key</label>
+              <input type="password" id="van_api_key" name="van_api_key" autocomplete="off" />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 7: Anything Else -->
+      <div class="form-section">
+        <div class="section-header">Section 7 - Anything Else</div>
+        <div class="section-body">
+          <div class="field-grid">
+
+            <div class="field field-full">
+              <label for="additional_notes">Additional Notes</label>
+              <textarea id="additional_notes" name="additional_notes"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="referral_source">How did you hear about Ark &amp; Dove?</label>
+              <select id="referral_source" name="referral_source">
+                <option value="">-- Select --</option>
+                <option>Referral</option>
+                <option>Social Media</option>
+                <option>Google Search</option>
+                <option>Conference/Event</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-area">
+        <button type="submit" id="submit-btn">Submit - We'll Have Your Campaign Ready in 24 Hours</button>
+        <p class="required-note">Fields marked <span style="color: var(--blue);">*</span> are required.</p>
+        <div class="form-error" id="form-error">Something went wrong. Please try again or email hello@arkandovecampaigns.com</div>
+      </div>
+
+    </form>
+
+    <!-- Success message -->
+    <div id="success-message">
+      <h2>Thank you!</h2>
+      <p>Your campaign package is being built. Here's what happens next:</p>
+      <ol>
+        <li><strong>Within 1 hour,</strong> you'll receive a welcome email with your shared Google Drive folder. Upload your logo, headshot, and any campaign photos there.</li>
+        <li><strong>Within 24 hours,</strong> you'll receive login credentials for your Ark &amp; Dove dashboard and your live candidate website.</li>
+        <li><strong>Your campaign operations are ready to go</strong> - volunteers, donors, turf, events, everything.</li>
+      </ol>
+      <div class="success-contact">
+        Questions? Email <a href="mailto:hello@arkandovecampaigns.com">hello@arkandovecampaigns.com</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div>Ark &amp; Dove Campaigns, LLC</div>
+    <div><a href="mailto:hello@arkandovecampaigns.com">hello@arkandovecampaigns.com</a></div>
+  </footer>
+
+  <script>
+    // --- Conditional: Office "Other" ---
+    const officeSelect = document.getElementById('office');
+    const officeOtherField = document.getElementById('office-other-field');
+    const officeOtherInput = document.getElementById('office_other');
+
+    officeSelect.addEventListener('change', () => {
+      const isOther = officeSelect.value === 'Other';
+      officeOtherField.style.display = isOther ? 'block' : 'none';
+      officeOtherInput.required = isOther;
+    });
+
+    // --- Color picker sync ---
+    function syncColorPicker(pickerId, hexId) {
+      const picker = document.getElementById(pickerId);
+      const hex = document.getElementById(hexId);
+
+      picker.addEventListener('input', () => {
+        hex.value = picker.value.toUpperCase();
+      });
+
+      hex.addEventListener('input', () => {
+        const val = hex.value.trim();
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          picker.value = val;
+        }
+      });
+    }
+
+    syncColorPicker('color_primary', 'color_primary_hex');
+    syncColorPicker('color_accent', 'color_accent_hex');
+
+    // --- Form submit ---
+    const form = document.getElementById('intake-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const formError = document.getElementById('form-error');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Basic required field check
+      const requiredFields = form.querySelectorAll('[required]');
+      let firstInvalid = null;
+      for (const field of requiredFields) {
+        if (!field.value.trim()) {
+          field.style.borderColor = '#C0392B';
+          if (!firstInvalid) firstInvalid = field;
+        } else {
+          field.style.borderColor = '';
+        }
+      }
+      if (firstInvalid) {
+        firstInvalid.focus();
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      formError.style.display = 'none';
+
+      // Collect form data
+      const data = {};
+      const formData = new FormData(form);
+      for (const [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+
+      try {
+        const res = await fetch('/.netlify/functions/intake', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) {
+          throw new Error('Server error');
+        }
+
+        form.style.display = 'none';
+        successMessage.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (err) {
+        formError.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit - We'll Have Your Campaign Ready in 24 Hours";
+      }
+    });
+
+    // Clear red border on correction
+    form.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', () => {
+        el.style.borderColor = '';
+      });
+    });
+  </script>
+
+</body>
+</html>

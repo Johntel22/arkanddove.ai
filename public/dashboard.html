@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ark &amp; Dove - Campaign Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0A2540;
+      --blue: #2B7DE9;
+      --white: #FFFFFF;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1E293B;
+      --green: #059669;
+      --yellow: #D97706;
+      --red: #DC2626;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .header-brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .header-center {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-300);
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-refresh {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-refresh:hover { background: rgba(255,255,255,0.1); }
+    .btn-refresh.loading { opacity: 0.5; pointer-events: none; }
+    .btn-new-campaign {
+      background: var(--gray-600);
+      border: none;
+      color: var(--gray-400);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: not-allowed;
+      font-family: inherit;
+      opacity: 0.5;
+    }
+    .last-updated {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-align: right;
+      padding: 6px 24px;
+      background: var(--gray-100);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    /* Main container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    /* Loading */
+    .loading-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 14px; color: var(--gray-500); }
+
+    /* Error */
+    .error-screen {
+      text-align: center;
+      padding: 60px 24px;
+    }
+    .error-screen h2 { color: var(--red); font-size: 18px; margin-bottom: 8px; }
+    .error-screen p { color: var(--gray-500); font-size: 14px; margin-bottom: 16px; }
+    .btn-retry {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ---- FIRM VIEW ---- */
+    .firm-view h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .campaign-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .campaign-card {
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      padding: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .campaign-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--blue);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .card-name { font-size: 17px; font-weight: 700; color: var(--navy); }
+    .card-office { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+    .card-days {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .card-days-number {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .card-days-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-500);
+    }
+    .card-metrics { display: flex; flex-direction: column; gap: 10px; }
+    .card-metric {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+    .card-metric-label {
+      width: 80px;
+      flex-shrink: 0;
+      font-weight: 600;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .card-metric-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--gray-200);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .card-metric-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--blue);
+      transition: width 0.5s ease;
+    }
+    .card-metric-value {
+      width: 90px;
+      flex-shrink: 0;
+      text-align: right;
+      color: var(--gray-600);
+      font-variant-numeric: tabular-nums;
+    }
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-green { background: var(--green); }
+    .status-yellow { background: var(--yellow); }
+    .status-red { background: var(--red); }
+
+    /* ---- DETAIL VIEW ---- */
+    .detail-view { display: none; }
+    .detail-view.active { display: block; }
+    .firm-view.hidden { display: none; }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--gray-300);
+      color: var(--gray-600);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 20px;
+      transition: background 0.15s;
+    }
+    .btn-back:hover { background: var(--gray-100); }
+
+    /* Campaign header */
+    .campaign-header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 24px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .campaign-header-left h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .campaign-header-left p {
+      font-size: 14px;
+      color: var(--gray-300);
+    }
+    .campaign-header-right {
+      text-align: right;
+    }
+    .big-days {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .big-days-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-300);
+      margin-top: 4px;
+    }
+    .election-date-sub {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      padding: 16px;
+    }
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+    .stat-sub {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+    .stat-bar {
+      height: 6px;
+      background: var(--gray-200);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--blue);
+      transition: width 0.5s ease;
+    }
+
+    /* AI Pulse */
+    .pulse-section {
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .pulse-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-badge {
+      font-size: 10px;
+      background: var(--blue);
+      color: var(--white);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pulse-items { display: flex; flex-direction: column; gap: 8px; }
+    .pulse-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--gray-50);
+      border-radius: 4px;
+      border-left: 3px solid var(--gray-300);
+      font-size: 13px;
+      color: var(--gray-700);
+    }
+    .pulse-item.high { border-left-color: var(--red); }
+    .pulse-item.medium { border-left-color: var(--yellow); }
+    .pulse-item.low { border-left-color: var(--green); }
+    .pulse-severity {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      width: 50px;
+    }
+    .pulse-item.high .pulse-severity { color: var(--red); }
+    .pulse-item.medium .pulse-severity { color: var(--yellow); }
+    .pulse-item.low .pulse-severity { color: var(--green); }
+    .pulse-empty {
+      text-align: center;
+      padding: 16px;
+      color: var(--gray-400);
+      font-size: 13px;
+    }
+
+    /* Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 20px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      background: var(--gray-200);
+      color: var(--gray-600);
+      transition: background 0.15s, color 0.15s;
+    }
+    .tab-btn:hover { background: var(--gray-300); }
+    .tab-btn.active {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-card {
+      background: var(--white);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .panel-stats {
+      display: flex;
+      gap: 16px;
+    }
+    .panel-stat {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .panel-stat strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table thead th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      color: var(--gray-500);
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+    .data-table tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+    }
+    .data-table tbody tr:nth-child(even) { background: var(--gray-50); }
+    .data-table tbody tr:hover { background: #EFF6FF; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-400);
+      font-size: 14px;
+    }
+
+    /* Endorsement cards */
+    .endorsement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+    .endorsement-card {
+      background: var(--gray-50);
+      border-radius: 6px;
+      padding: 16px;
+      border: 1px solid var(--gray-200);
+    }
+    .endorsement-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .endorsement-title {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+    .endorsement-quote {
+      font-size: 13px;
+      color: var(--gray-600);
+      font-style: italic;
+    }
+    .endorsement-status {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .endorsement-status.public { color: var(--green); }
+    .endorsement-status.pending { color: var(--yellow); }
+
+    /* Website Card (in stats row) */
+    .website-card {
+      background: linear-gradient(135deg, #FFF8E1 0%, #FFF3CD 100%);
+      border: 2px solid #F0C040;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .website-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(240,192,64,0.3); border-color: #D4A017; }
+    .website-card-btn {
+      margin-top: 8px;
+      display: inline-block;
+      padding: 8px 20px;
+      background: var(--navy);
+      color: #F0C040;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .website-card:hover .website-card-btn { background: #0D3058; }
+
+    /* Website Editor Overlay */
+    .website-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: var(--gray-50);
+      overflow-y: auto;
+    }
+    .website-overlay.open { display: block; }
+    .website-overlay-header {
+      position: sticky;
+      top: 0;
+      z-index: 501;
+      background: var(--navy);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .website-overlay-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #F0C040;
+    }
+    .website-overlay-close {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: var(--white);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .website-overlay-close:hover { background: rgba(255,255,255,0.1); }
+    .website-overlay-body { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+    /* Action Picker */
+    .action-picker { padding: 24px; }
+    .action-picker-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 20px; text-align: center; }
+    .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .action-card { background: var(--white); border: 2px solid var(--gray-200); border-radius: 12px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .action-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .action-icon { font-size: 28px; margin-bottom: 8px; }
+    .action-label { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .action-desc { font-size: 12px; color: var(--gray-400); }
+    .edit-panel { padding: 24px; }
+    .back-to-actions { background: none; border: none; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--blue); cursor: pointer; margin-bottom: 16px; padding: 0; }
+    .back-to-actions:hover { color: var(--navy); }
+    .version-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 24px; border-top: 1px solid var(--gray-200); background: var(--gray-50); }
+    .version-bar-label { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
+    @media (max-width: 768px) { .action-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .action-grid { grid-template-columns: 1fr; } }
+
+    /* Website Editor */
+    .website-editor { padding: 20px; }
+    .editor-section { border: 1px solid var(--gray-200); border-radius: 10px; padding: 20px; margin-bottom: 16px; background: var(--white); }
+    .editor-section-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--gray-100); text-transform: uppercase; letter-spacing: 0.04em; }
+    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .editor-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .editor-field.full { grid-column: 1 / -1; }
+    .editor-field label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
+    .editor-field input, .editor-field textarea, .editor-field select { padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 14px; color: var(--gray-800); outline: none; transition: border-color 0.2s; }
+    .editor-field input:focus, .editor-field textarea:focus, .editor-field select:focus { border-color: var(--blue); }
+    .editor-field textarea { resize: vertical; }
+    .color-picker-row { display: flex; align-items: center; gap: 8px; }
+    .color-picker-row input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--gray-200); border-radius: 8px; padding: 2px; cursor: pointer; }
+    .file-upload-area { display: flex; align-items: center; gap: 12px; }
+    .file-preview { font-size: 13px; color: var(--gray-400); padding: 8px 12px; background: var(--gray-100); border-radius: 6px; flex: 1; }
+    .editor-btn { padding: 10px 20px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--gray-700); background: var(--white); cursor: pointer; transition: all 0.15s; }
+    .editor-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .editor-btn.blue { background: var(--blue); color: var(--white); border-color: var(--blue); }
+    .editor-btn.blue:hover { background: #1a6dd4; }
+    .editor-btn.danger { color: var(--red); border-color: var(--red); }
+    .editor-btn.danger:hover { background: #fef2f2; }
+    .editor-btn.small { padding: 6px 14px; font-size: 13px; }
+    .editor-actions { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 0; }
+    .issue-editor { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 12px; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200); }
+    .issue-number { width: 28px; height: 28px; background: var(--navy); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .issue-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .issue-title-input, .issue-desc-input { padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; }
+    .issue-title-input:focus, .issue-desc-input:focus { border-color: var(--blue); }
+    .version-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .version-btn { padding: 6px 14px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 12px; color: var(--gray-600); background: var(--gray-50); cursor: pointer; transition: all 0.15s; }
+    .version-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    @media (max-width: 768px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .editor-actions { flex-direction: column; }
+      .file-upload-area { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Money formatting */
+    .money { font-variant-numeric: tabular-nums; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header { padding: 0 16px; }
+      .header-center { display: none; }
+      .container { padding: 16px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .campaign-header { flex-direction: column; text-align: center; gap: 16px; }
+      .campaign-header-right { text-align: center; }
+      .campaign-grid { grid-template-columns: 1fr; }
+      .panel-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .tabs-bar { gap: 2px; }
+      .tab-btn { padding: 6px 12px; font-size: 12px; }
+      .data-table { font-size: 12px; }
+      .data-table thead th, .data-table tbody td { padding: 8px 10px; }
+      .endorsement-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .big-days { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Password Gate -->
+  <div id="authGate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--gray-50);">
+    <div style="background:var(--white);border-radius:8px;box-shadow:var(--shadow-md);border:1px solid var(--gray-200);padding:40px;max-width:380px;width:100%;text-align:center;">
+      <div style="font-size:24px;font-weight:800;color:var(--navy);margin-bottom:4px;font-family:serif;">A&amp;D</div>
+      <h2 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;">Campaign Dashboard</h2>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:24px;">Enter your password to continue</p>
+      <form onsubmit="return checkAuth()">
+        <input type="password" id="authPassword" placeholder="Password" autofocus
+          style="width:100%;padding:12px 16px;border:2px solid var(--gray-200);border-radius:6px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--gray-200)'" />
+        <button type="submit" style="width:100%;padding:12px;background:var(--navy);color:var(--white);border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;">Sign In</button>
+      </form>
+      <p id="authError" style="color:var(--red);font-size:13px;margin-top:12px;display:none;">Incorrect password</p>
+    </div>
+  </div>
+
+  <div id="dashboardApp" style="display:none;">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-brand">ARK &amp; DOVE</div>
+    <div class="header-center">Campaign Dashboard</div>
+    <div class="header-right">
+      <button class="btn-refresh" onclick="fetchData()" id="refreshBtn">Refresh</button>
+      <button class="btn-new-campaign" disabled>+ New Campaign</button>
+    </div>
+  </header>
+
+  <div class="last-updated" id="lastUpdated"></div>
+
+  <!-- Loading -->
+  <div class="container" id="loadingScreen">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading campaign data...</div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="container" id="errorScreen" style="display:none;">
+    <div class="error-screen">
+      <h2>Unable to load dashboard</h2>
+      <p id="errorMessage">Check your connection and try again.</p>
+      <button class="btn-retry" onclick="fetchData()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container" id="mainContent" style="display:none;">
+
+    <!-- Firm View -->
+    <div class="firm-view" id="firmView">
+      <h2>Your Campaigns</h2>
+      <div class="campaign-grid" id="campaignGrid"></div>
+    </div>
+
+    <!-- Detail View -->
+    <div class="detail-view" id="detailView">
+
+      <button class="btn-back" onclick="showFirmView()">&#8592; All Campaigns</button>
+
+      <!-- Campaign header -->
+      <div class="campaign-header" id="campaignHeader"></div>
+
+      <!-- Stats row -->
+      <div class="stats-row" id="statsRow"></div>
+
+      <!-- AI Pulse -->
+      <div class="pulse-section" id="pulseSection"></div>
+
+      <!-- Tabs -->
+      <div class="tabs-bar" id="tabsBar"></div>
+
+      <!-- Tab panels -->
+      <div id="tabPanels"></div>
+
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sheetParam = urlParams.get('sheet');
+    const API_URL = sheetParam ? '/api/arkandove-dashboard?sheet=' + encodeURIComponent(sheetParam) : '/api/arkandove-dashboard';
+    let dashboardData = null;
+
+    // ---- Helpers ----
+    function fmt$(n) { return '$' + Number(n || 0).toLocaleString(); }
+    function fmtN(n) { return Number(n || 0).toLocaleString(); }
+    function fmtPct(n) { return (n || 0) + '%'; }
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function daysColor(days) {
+      if (days === null) return 'gray';
+      if (days > 90) return 'var(--green)';
+      if (days > 30) return 'var(--yellow)';
+      return 'var(--red)';
+    }
+    function statusClass(days, pctDoors) {
+      if (days === null) return 'status-green';
+      if (days < 30 && pctDoors < 50) return 'status-red';
+      if (days < 60 && pctDoors < 30) return 'status-red';
+      if (days < 60) return 'status-yellow';
+      return 'status-green';
+    }
+
+    // ---- Fetch Data ----
+    async function fetchData() {
+      const btn = document.getElementById('refreshBtn');
+      btn.classList.add('loading');
+      btn.textContent = 'Loading...';
+
+      document.getElementById('loadingScreen').style.display = '';
+      document.getElementById('errorScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
+
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Server returned ' + res.status);
+        dashboardData = await res.json();
+
+        if (dashboardData.error) throw new Error(dashboardData.detail || dashboardData.error);
+
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = '';
+
+        const ts = dashboardData.fetchedAt ? new Date(dashboardData.fetchedAt) : new Date();
+        document.getElementById('lastUpdated').textContent = 'Last updated: ' + ts.toLocaleString();
+
+        renderFirmView();
+      } catch (err) {
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('errorScreen').style.display = '';
+        document.getElementById('errorMessage').textContent = err.message;
+      } finally {
+        btn.classList.remove('loading');
+        btn.textContent = 'Refresh';
+      }
+    }
+
+    // ---- Firm View ----
+    function renderFirmView() {
+      const d = dashboardData;
+      const c = d.campaign;
+      const grid = document.getElementById('campaignGrid');
+
+      const doorPct = d.turf.totalDoors > 0 ? Math.round((d.turf.doorsKnocked / d.turf.totalDoors) * 100) : 0;
+      const donorPct = c.donationGoal > 0 ? Math.round((d.donors.totalRaised / c.donationGoal) * 100) : 0;
+      const sc = statusClass(c.daysUntilElection, doorPct);
+
+      grid.innerHTML = `
+        <div class="campaign-card" onclick="showDetailView()">
+          <div class="card-top">
+            <div>
+              <div class="card-name">${escHtml(c.name)}</div>
+              <div class="card-office">${escHtml(c.office)}${c.district ? ' - ' + escHtml(c.district) : ''}</div>
+            </div>
+            <div class="card-days">
+              <div class="card-days-number" style="color:${daysColor(c.daysUntilElection)}">${c.daysUntilElection !== null ? c.daysUntilElection : '--'}</div>
+              <div class="card-days-label">days out</div>
+            </div>
+          </div>
+          <div class="card-metrics">
+            <div class="card-metric">
+              <span class="card-metric-label">Doors</span>
+              <div class="card-metric-bar"><div class="card-metric-bar-fill" style="width:${Math.min(doorPct,100)}%"></div></div>
+              <span class="card-metric-value">${fmtN(d.turf.doorsKnocked)} / ${fmtN(d.turf.totalDoors)}</span>
+            </div>
+            <div class="card-metric">
+              <span class="card-metric-label">Donors</span>
+              <div class="card-metric-bar"><div class="card-metric-bar-fill" style="width:${Math.min(donorPct,100)}%"></div></div>
+              <span class="card-metric-value">${fmt$(d.donors.totalRaised)}${c.donationGoal ? ' / ' + fmt$(c.donationGoal) : ''}</span>
+            </div>
+            <div class="card-metric">
+              <span class="card-metric-label">Volunteers</span>
+              <div class="card-metric-bar"><div class="card-metric-bar-fill" style="width:${d.volunteers.total > 0 ? 100 : 0}%"></div></div>
+              <span class="card-metric-value">${fmtN(d.volunteers.total)} active</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:14px;">
+            <div class="status-dot ${sc}"></div>
+            <span style="font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.04em;">
+              ${sc === 'status-green' ? 'On Track' : sc === 'status-yellow' ? 'Watch' : 'Behind'}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Detail View ----
+    function showDetailView() {
+      document.getElementById('firmView').classList.add('hidden');
+      document.getElementById('detailView').classList.add('active');
+      renderDetailView();
+    }
+    function showFirmView() {
+      document.getElementById('firmView').classList.remove('hidden');
+      document.getElementById('detailView').classList.remove('active');
+    }
+
+    function renderDetailView() {
+      const d = dashboardData;
+      const c = d.campaign;
+
+      // Header
+      document.getElementById('campaignHeader').innerHTML = `
+        <div class="campaign-header-left">
+          <h1>${escHtml(c.name)}</h1>
+          <p>${escHtml(c.office)}${c.district ? ' - ' + escHtml(c.district) : ''}${c.state ? ', ' + escHtml(c.state) : ''}</p>
+        </div>
+        <div class="campaign-header-right">
+          <div class="big-days" style="color:${daysColor(c.daysUntilElection)}">${c.daysUntilElection !== null ? c.daysUntilElection : '--'}</div>
+          <div class="big-days-label">days until election</div>
+          <div class="election-date-sub">${escHtml(c.electionDate)}</div>
+        </div>
+      `;
+
+      // Stats row
+      const doorPct = d.turf.totalDoors > 0 ? Math.round((d.turf.doorsKnocked / d.turf.totalDoors) * 100) : 0;
+      document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Doors</div>
+          <div class="stat-value">${fmtN(d.turf.doorsKnocked)}<span style="font-size:14px;color:var(--gray-400)">/${fmtN(d.turf.totalDoors)}</span></div>
+          <div class="stat-sub">${fmtPct(doorPct)} complete</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.min(doorPct,100)}%"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Donors</div>
+          <div class="stat-value">${fmt$(d.donors.totalRaised)}</div>
+          <div class="stat-sub">${d.donors.callCount} calls made</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Volunteers</div>
+          <div class="stat-value">${fmtN(d.volunteers.total)}</div>
+          <div class="stat-sub">${d.volunteers.thisWeek} new this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Contacts</div>
+          <div class="stat-value">${fmtN(d.contacts.total)}</div>
+          <div class="stat-sub">${d.contacts.thisWeek} new this week</div>
+        </div>
+        <div class="stat-card website-card" onclick="openWebsiteEditor()">
+          <div class="stat-label" style="color:var(--navy)">Your Website</div>
+          <div class="stat-value" style="font-size:18px;color:var(--navy)">${escHtml(c.websiteUrl || c.name || 'Not set up')}</div>
+          <div class="website-card-btn">Edit Your Website</div>
+        </div>
+      `;
+
+      // AI Pulse
+      renderPulse(d.priorities);
+
+      // Tabs
+      renderTabs();
+    }
+
+    function renderPulse(priorities) {
+      const el = document.getElementById('pulseSection');
+      let html = `<div class="pulse-title">AI Pulse <span class="pulse-badge">Smart Priorities</span></div>`;
+      if (!priorities || priorities.length === 0) {
+        html += `<div class="pulse-empty">All clear - no urgent items detected.</div>`;
+      } else {
+        html += '<div class="pulse-items">';
+        priorities.forEach(p => {
+          html += `<div class="pulse-item ${p.severity}">
+            <span class="pulse-severity">${escHtml(p.severity)}</span>
+            <span>${escHtml(p.message)}</span>
+          </div>`;
+        });
+        html += '</div>';
+      }
+      el.innerHTML = html;
+    }
+
+    // ---- Tabs ----
+    const TAB_CONFIG = [
+      { id: 'volunteers', label: 'Volunteers' },
+      { id: 'calltime', label: 'Call Time / Donors' },
+      { id: 'turf', label: 'Turf / Field' },
+      { id: 'events', label: 'Events' },
+      { id: 'yardsigns', label: 'Yard Signs' },
+      { id: 'postcards', label: 'Postcards' },
+      { id: 'endorsements', label: 'Endorsements' }
+    ];
+
+    let activeTab = 'volunteers';
+
+    function renderTabs() {
+      const bar = document.getElementById('tabsBar');
+      bar.innerHTML = TAB_CONFIG.map(t =>
+        `<button class="tab-btn ${t.id === activeTab ? 'active' : ''}" onclick="switchTab('${t.id}')">${t.label}</button>`
+      ).join('');
+
+      renderTabPanel();
+    }
+
+    function switchTab(id) {
+      activeTab = id;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.tab-btn[onclick="switchTab('${id}')"]`).classList.add('active');
+      renderTabPanel();
+    }
+
+    function renderTabPanel() {
+      const panels = document.getElementById('tabPanels');
+      const d = dashboardData;
+
+      switch (activeTab) {
+        case 'volunteers': panels.innerHTML = renderVolunteersPanel(d.volunteers); break;
+        case 'calltime': panels.innerHTML = renderCallTimePanel(d.donors); break;
+        case 'turf': panels.innerHTML = renderTurfPanel(d.turf); break;
+        case 'events': panels.innerHTML = renderEventsPanel(d.events); break;
+        case 'yardsigns': panels.innerHTML = renderYardSignsPanel(d.yardSigns); break;
+        case 'postcards': panels.innerHTML = renderPostcardsPanel(d.postcards); break;
+        case 'endorsements': panels.innerHTML = renderEndorsementsPanel(d.endorsements); break;
+      }
+    }
+
+    function emptyMsg(section) {
+      return `<div class="empty-state">No data yet - this will populate as your campaign grows.</div>`;
+    }
+
+    // ---- Panel Renderers ----
+
+    function renderVolunteersPanel(v) {
+      const byAvail = {};
+      (v.all || []).forEach(r => {
+        const a = r.availability || 'unspecified';
+        byAvail[a] = (byAvail[a] || 0) + 1;
+      });
+      const statsHtml = Object.entries(v.byStatus || {}).map(([k,val]) =>
+        `<span class="panel-stat"><strong>${val}</strong> ${escHtml(k)}</span>`
+      ).join('');
+
+      if (!v.all || v.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Volunteer Roster</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Volunteer Roster</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${v.total}</strong> total</span>
+            <span class="panel-stat"><strong>${v.thisWeek}</strong> this week</span>
+            ${statsHtml}
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Assigned Turf</th><th>Signup Date</th></tr></thead>
+          <tbody>
+            ${v.all.map(r => `<tr>
+              <td>${escHtml(r.name)}</td>
+              <td>${escHtml(r.email)}</td>
+              <td>${escHtml(r.phone)}</td>
+              <td>${escHtml(r.status)}</td>
+              <td>${escHtml(r.turf)}</td>
+              <td>${escHtml(r.date)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+
+    function renderCallTimePanel(donors) {
+      const convRate = donors.callCount > 0 ? Math.round((donors.all.filter(d => d.received > 0).length / donors.callCount) * 100) : 0;
+
+      if (!donors.all || donors.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Call Time / Donors</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Call Time / Donors</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${fmt$(donors.totalRaised)}</strong> raised</span>
+            <span class="panel-stat"><strong>${fmt$(donors.totalPledged)}</strong> pledged</span>
+            <span class="panel-stat"><strong>${donors.callCount}</strong> calls</span>
+            <span class="panel-stat"><strong>${convRate}%</strong> conversion</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Donor Name</th><th>Amount Pledged</th><th>Amount Received</th><th>Result</th><th>Called By</th></tr></thead>
+          <tbody>
+            ${donors.all.map(r => `<tr>
+              <td>${escHtml(r.date)}</td>
+              <td>${escHtml(r.donor)}</td>
+              <td class="money">${fmt$(r.pledged)}</td>
+              <td class="money">${fmt$(r.received)}</td>
+              <td>${escHtml(r.result)}</td>
+              <td>${escHtml(r.calledBy)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+
+    function renderTurfPanel(turf) {
+      if (!turf.all || turf.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Turf / Field</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Turf / Field</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${fmtN(turf.totalDoors)}</strong> total doors</span>
+            <span class="panel-stat"><strong>${fmtN(turf.doorsKnocked)}</strong> knocked</span>
+            <span class="panel-stat"><strong>${fmtN(turf.totalDoors - turf.doorsKnocked)}</strong> remaining</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Area</th><th>ZIP</th><th>Total Doors</th><th>Knocked</th><th>% Complete</th><th>Assigned To</th><th>Status</th></tr></thead>
+          <tbody>
+            ${turf.all.map(r => `<tr>
+              <td>${escHtml(r.area)}</td>
+              <td>${escHtml(r.zip)}</td>
+              <td>${fmtN(r.totalDoors)}</td>
+              <td>${fmtN(r.knocked)}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div class="stat-bar" style="width:60px;margin:0"><div class="stat-bar-fill" style="width:${Math.min(r.pctComplete,100)}%"></div></div>
+                  <span>${r.pctComplete}%</span>
+                </div>
+              </td>
+              <td>${escHtml(r.assignedTo)}</td>
+              <td>${escHtml(r.status)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+
+    function renderEventsPanel(events) {
+      const allEmpty = (!events.upcoming || events.upcoming.length === 0) && (!events.past || events.past.length === 0);
+      if (allEmpty) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Events</span></div>${emptyMsg()}</div>`;
+      }
+
+      let html = '<div class="panel-card">';
+      html += `<div class="panel-header">
+        <span class="panel-title">Events</span>
+        <div class="panel-stats">
+          <span class="panel-stat"><strong>${(events.upcoming || []).length}</strong> upcoming</span>
+          <span class="panel-stat"><strong>${(events.past || []).length}</strong> past</span>
+          <span class="panel-stat"><strong>${fmtN(events.totalAttendance)}</strong> total attendance</span>
+        </div>
+      </div>`;
+
+      if (events.upcoming && events.upcoming.length > 0) {
+        html += `<div style="padding:12px 20px 4px"><span style="font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.04em;">Upcoming</span></div>`;
+        html += `<div style="overflow-x:auto"><table class="data-table">
+          <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Type</th><th>RSVP</th></tr></thead>
+          <tbody>${events.upcoming.map(e => `<tr>
+            <td>${escHtml(e.date)}</td><td>${escHtml(e.name)}</td><td>${escHtml(e.location)}</td><td>${escHtml(e.type)}</td><td>${fmtN(e.rsvp)}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>`;
+      }
+
+      if (events.past && events.past.length > 0) {
+        html += `<div style="padding:12px 20px 4px"><span style="font-size:12px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.04em;">Past</span></div>`;
+        html += `<div style="overflow-x:auto"><table class="data-table">
+          <thead><tr><th>Date</th><th>Event</th><th>Location</th><th>Type</th><th>Attendance</th></tr></thead>
+          <tbody>${events.past.map(e => `<tr>
+            <td>${escHtml(e.date)}</td><td>${escHtml(e.name)}</td><td>${escHtml(e.location)}</td><td>${escHtml(e.type)}</td><td>${fmtN(e.attendance)}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>`;
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    function renderYardSignsPanel(ys) {
+      if (!ys.all || ys.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Yard Signs</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Yard Signs</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${ys.requested}</strong> requested</span>
+            <span class="panel-stat"><strong>${ys.delivered}</strong> delivered</span>
+            <span class="panel-stat"><strong>${ys.pending}</strong> pending</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Address</th><th>Status</th><th>Assigned Driver</th><th>Delivered Date</th></tr></thead>
+          <tbody>
+            ${ys.all.map(r => `<tr>
+              <td>${escHtml(r.name)}</td>
+              <td>${escHtml(r.address)}</td>
+              <td>${escHtml(r.status)}</td>
+              <td>${escHtml(r.driver)}</td>
+              <td>${escHtml(r.deliveredDate)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+
+    function renderPostcardsPanel(pc) {
+      if (!pc.all || pc.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Postcards</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Postcards</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${fmtN(pc.totalRequested)}</strong> requested</span>
+            <span class="panel-stat"><strong>${pc.completed}</strong> completed</span>
+            <span class="panel-stat"><strong>${pc.pending}</strong> in progress</span>
+            <span class="panel-stat"><strong>${pc.batchesClaimed}</strong> batches</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Postcards Requested</th><th>Status</th><th>Batch Number</th></tr></thead>
+          <tbody>
+            ${pc.all.map(r => `<tr>
+              <td>${escHtml(r.name)}</td>
+              <td>${fmtN(r.requested)}</td>
+              <td>${escHtml(r.status)}</td>
+              <td>${escHtml(r.batch)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+
+    function renderEndorsementsPanel(end) {
+      if (!end.all || end.all.length === 0) {
+        return `<div class="panel-card"><div class="panel-header"><span class="panel-title">Endorsements</span></div>${emptyMsg()}</div>`;
+      }
+
+      return `<div class="panel-card">
+        <div class="panel-header">
+          <span class="panel-title">Endorsements</span>
+          <div class="panel-stats">
+            <span class="panel-stat"><strong>${end.total}</strong> total</span>
+            <span class="panel-stat"><strong>${end.public}</strong> public</span>
+            <span class="panel-stat"><strong>${end.pending}</strong> pending</span>
+          </div>
+        </div>
+        <div class="endorsement-grid">
+          ${end.all.map(e => {
+            const isPub = (e.public || '').toLowerCase().includes('yes') || (e.public || '').toLowerCase().includes('public');
+            const isPend = (e.public || '').toLowerCase().includes('pending');
+            return `<div class="endorsement-card">
+              <div class="endorsement-name">${escHtml(e.name)}</div>
+              <div class="endorsement-title">${escHtml(e.title)}</div>
+              ${e.quote ? `<div class="endorsement-quote">"${escHtml(e.quote)}"</div>` : ''}
+              <div class="endorsement-status ${isPub ? 'public' : isPend ? 'pending' : ''}">${isPub ? 'Public' : isPend ? 'Pending' : escHtml(e.public)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    // ---- Website Panel ----
+
+    // Version history stored in localStorage per campaign
+    function getVersionHistory() {
+      try { return JSON.parse(localStorage.getItem('ad_versions') || '[]'); } catch(e) { return []; }
+    }
+    function saveVersion(campaign) {
+      const versions = getVersionHistory();
+      versions.unshift({ timestamp: new Date().toISOString(), data: JSON.parse(JSON.stringify(campaign)) });
+      if (versions.length > 5) versions.length = 5;
+      localStorage.setItem('ad_versions', JSON.stringify(versions));
+    }
+
+    function renderWebsitePanel(campaign) {
+      const c = campaign || {};
+      const versions = getVersionHistory();
+      const versionHtml = versions.length > 0 ? versions.map((v, i) => {
+        const d = new Date(v.timestamp);
+        return `<button class="version-btn" onclick="restoreVersion(${i})">${d.toLocaleDateString()} ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</button>`;
+      }).join('') : '<span style="color:var(--gray-400);font-size:13px;">No previous versions yet.</span>';
+
+      return `
+      <div class="website-editor">
+
+        <!-- WHAT DO YOU WANT TO UPDATE? -->
+        <div class="action-picker">
+          <h3 class="action-picker-title">What do you want to update?</h3>
+          <div class="action-grid">
+            <button class="action-card" onclick="showEditSection('home')">
+              <div class="action-icon">&#127968;</div>
+              <div class="action-label">Home Page</div>
+              <div class="action-desc">Name, tagline, hero photo</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('about')">
+              <div class="action-icon">&#128100;</div>
+              <div class="action-label">About / Bio</div>
+              <div class="action-desc">Bio text, headshot</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('issues')">
+              <div class="action-icon">&#128221;</div>
+              <div class="action-label">Issues</div>
+              <div class="action-desc">Add, edit, reorder issues</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('photos')">
+              <div class="action-icon">&#128247;</div>
+              <div class="action-label">Photos</div>
+              <div class="action-desc">Upload or replace images</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('brand')">
+              <div class="action-icon">&#127912;</div>
+              <div class="action-label">Colors / Brand</div>
+              <div class="action-desc">Change campaign colors</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('links')">
+              <div class="action-icon">&#128279;</div>
+              <div class="action-label">Links / Social</div>
+              <div class="action-desc">Donation, email, social media</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('endorsement')">
+              <div class="action-icon">&#11088;</div>
+              <div class="action-label">Add Endorsement</div>
+              <div class="action-desc">New endorsement for the site</div>
+            </button>
+            <button class="action-card" onclick="showEditSection('other')">
+              <div class="action-icon">&#9998;</div>
+              <div class="action-label">Other Change</div>
+              <div class="action-desc">Describe what you need</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- EDIT PANEL (shows when an action is selected) -->
+        <div class="edit-panel" id="editPanel" style="display:none;">
+          <button class="back-to-actions" onclick="hideEditSection()">&#8592; Back to options</button>
+          <div id="editPanelContent"></div>
+          <div class="editor-actions">
+            <button class="editor-btn" onclick="saveDraft()">Save Draft</button>
+            <button class="editor-btn blue" onclick="publishSite()">Publish Changes</button>
+          </div>
+        </div>
+
+        <!-- VERSION HISTORY (always visible at bottom) -->
+        <div class="version-bar">
+          <span class="version-bar-label">Version History:</span>
+          ${versionHtml}
+          <span style="margin-left:auto;font-size:12px;color:var(--gray-400);">${c.websiteUrl || ''}</span>
+        </div>
+      </div>`;
+    }
+
+    // Section content builders
+    const sectionBuilders = {};
+
+    sectionBuilders.home = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Home Page</div>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Candidate Name</label><input type="text" id="web-name" value="${escHtml(c.name || '')}" /></div>
+          <div class="editor-field"><label>Campaign Tagline</label><input type="text" id="web-tagline" value="${escHtml(c.tagline || '')}" placeholder="For the People" /></div>
+          <div class="editor-field"><label>Office</label><input type="text" id="web-office" value="${escHtml(c.office || '')}" /></div>
+          <div class="editor-field"><label>District</label><input type="text" id="web-district" value="${escHtml(c.district || '')}" /></div>
+        </div>
+      </div>`;
+    };
+
+    sectionBuilders.about = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">About / Bio</div>
+        <div class="editor-field full"><label>Candidate Bio</label><textarea id="web-bio" rows="6" placeholder="2-3 paragraphs...">${escHtml(c.bio || '')}</textarea></div>
+      </div>`;
+    };
+
+    sectionBuilders.issues = function(c) {
+      const issues = c.issues || ['', '', ''];
+      return `<div class="editor-section">
+        <div class="editor-section-title">Issues / Platform</div>
+        <div id="issues-list">
+          ${issues.map((issue, i) => `<div class="issue-editor"><div class="issue-number">${i+1}</div><div class="issue-fields"><input type="text" class="issue-title-input" placeholder="Issue title" value="${escHtml(typeof issue==='object' ? issue.title||'' : '')}" /><textarea class="issue-desc-input" rows="2" placeholder="Brief description...">${escHtml(typeof issue==='object' ? issue.description||'' : (issue||''))}</textarea></div><button class="editor-btn danger small" onclick="this.closest('.issue-editor').remove()">Remove</button></div>`).join('')}
+        </div>
+        <button class="editor-btn small" onclick="addIssue()">+ Add Issue</button>
+      </div>`;
+    };
+
+    sectionBuilders.photos = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Photos</div>
+        <div class="editor-grid">
+          <div class="editor-field">
+            <label>Hero Photo</label>
+            <div class="file-upload-area"><input type="file" id="web-hero-photo" accept="image/*" style="display:none" onchange="handleFilePreview(this,'hero-preview')" /><div class="file-preview" id="hero-preview">${c.heroPhoto ? 'Current photo uploaded' : 'No photo'}</div><button class="editor-btn small" onclick="document.getElementById('web-hero-photo').click()">Upload</button></div>
+          </div>
+          <div class="editor-field">
+            <label>Headshot</label>
+            <div class="file-upload-area"><input type="file" id="web-headshot" accept="image/*" style="display:none" onchange="handleFilePreview(this,'headshot-preview')" /><div class="file-preview" id="headshot-preview">${c.headshot ? 'Current headshot' : 'No headshot'}</div><button class="editor-btn small" onclick="document.getElementById('web-headshot').click()">Upload</button></div>
+          </div>
+        </div>
+      </div>`;
+    };
+
+    sectionBuilders.brand = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Colors / Brand</div>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Primary Color</label><div class="color-picker-row"><input type="color" id="web-primary-color" value="${c.primaryColor || '#0A2540'}" /><input type="text" id="web-primary-hex" value="${c.primaryColor || '#0A2540'}" style="width:100px" oninput="document.getElementById('web-primary-color').value=this.value" /></div></div>
+          <div class="editor-field"><label>Accent Color</label><div class="color-picker-row"><input type="color" id="web-accent-color" value="${c.accentColor || '#2B7DE9'}" /><input type="text" id="web-accent-hex" value="${c.accentColor || '#2B7DE9'}" style="width:100px" oninput="document.getElementById('web-accent-color').value=this.value" /></div></div>
+        </div>
+      </div>`;
+    };
+
+    sectionBuilders.links = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Links / Social Media</div>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Donation URL (ActBlue)</label><input type="url" id="web-donate" value="${escHtml(c.donateUrl || '')}" placeholder="https://secure.actblue.com/..." /></div>
+          <div class="editor-field"><label>Campaign Email</label><input type="email" id="web-email" value="${escHtml(c.email || '')}" /></div>
+          <div class="editor-field"><label>Facebook</label><input type="text" id="web-facebook" value="${escHtml(c.facebook || '')}" placeholder="facebook.com/..." /></div>
+          <div class="editor-field"><label>Instagram</label><input type="text" id="web-instagram" value="${escHtml(c.instagram || '')}" placeholder="@handle" /></div>
+        </div>
+      </div>`;
+    };
+
+    sectionBuilders.endorsement = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Add New Endorsement</div>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Endorser Name</label><input type="text" id="end-name" placeholder="Sierra Club - MD Chapter" /></div>
+          <div class="editor-field"><label>Title / Organization</label><input type="text" id="end-title" placeholder="Environmental Organization" /></div>
+        </div>
+        <div class="editor-field full"><label>Quote</label><textarea id="end-quote" rows="3" placeholder="What they said about the candidate..."></textarea></div>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Date Received</label><input type="date" id="end-date" /></div>
+          <div class="editor-field"><label>Ready to Announce?</label><select id="end-public"><option value="no">Not yet</option><option value="yes">Yes - publish to website</option></select></div>
+        </div>
+      </div>`;
+    };
+
+    sectionBuilders.other = function(c) {
+      return `<div class="editor-section">
+        <div class="editor-section-title">Describe Your Change</div>
+        <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px;">Tell us what you want updated and we'll preview it before applying. For major rewrites, contact your account manager.</p>
+        <div class="editor-grid">
+          <div class="editor-field"><label>Which page?</label><select id="change-page"><option value="home">Home</option><option value="about">About</option><option value="issues">Issues</option><option value="events">Events</option><option value="volunteer">Volunteer</option><option value="other">Other</option></select></div>
+          <div class="editor-field"><label>What type of change?</label><select id="change-section"><option value="text">Text / Copy</option><option value="photo">Photo</option><option value="layout">Layout</option><option value="new">Add something new</option><option value="remove">Remove something</option></select></div>
+        </div>
+        <div class="editor-field full"><label>Describe the change</label><textarea id="change-description" rows="4" placeholder="Add that I was endorsed by the Sierra Club on May 5..."></textarea></div>
+        <button class="editor-btn blue" onclick="submitChangeRequest()">Preview Change</button>
+        <div id="change-preview" style="display:none;margin-top:12px;"></div>
+      </div>`;
+    };
+
+    function showEditSection(section) {
+      currentEditSection = section;
+      const c = dashboardData.campaign || {};
+      const builder = sectionBuilders[section];
+      if (!builder) return;
+      document.getElementById('editPanelContent').innerHTML = builder(c);
+      document.getElementById('editPanel').style.display = 'block';
+      document.querySelector('.action-picker').style.display = 'none';
+    }
+
+    function hideEditSection() {
+      currentEditSection = null;
+      document.getElementById('editPanel').style.display = 'none';
+      document.querySelector('.action-picker').style.display = 'block';
+    }
+
+    function addIssue() {
+      const list = document.getElementById('issues-list');
+      const num = list.querySelectorAll('.issue-editor').length + 1;
+      const div = document.createElement('div');
+      div.className = 'issue-editor';
+      div.innerHTML = '<div class="issue-number">' + num + '</div><div class="issue-fields"><input type="text" class="issue-title-input" placeholder="Issue title" /><textarea class="issue-desc-input" rows="2" placeholder="Brief description..."></textarea></div><button class="editor-btn danger small" onclick="this.closest(\'.issue-editor\').remove()">Remove</button>';
+      list.appendChild(div);
+    }
+
+    function handleFilePreview(input, previewId) {
+      const preview = document.getElementById(previewId);
+      if (input.files && input.files[0]) {
+        preview.textContent = input.files[0].name + ' (' + Math.round(input.files[0].size / 1024) + 'KB)';
+        preview.style.color = 'var(--green)';
+      }
+    }
+
+    let currentEditSection = null;
+    const UPDATE_API = '/.netlify/functions/arkandove-website-update';
+    const SHEET_ID = sheetParam || null;
+
+    function getFormDataForSection(section) {
+      switch (section) {
+        case 'home': return {
+          name: document.getElementById('web-name')?.value || '',
+          tagline: document.getElementById('web-tagline')?.value || '',
+          office: document.getElementById('web-office')?.value || '',
+          district: document.getElementById('web-district')?.value || '',
+        };
+        case 'about': return {
+          bio: document.getElementById('web-bio')?.value || '',
+        };
+        case 'issues':
+          const issues = [];
+          document.querySelectorAll('.issue-editor').forEach(el => {
+            const title = el.querySelector('.issue-title-input')?.value || '';
+            const desc = el.querySelector('.issue-desc-input')?.value || '';
+            if (title || desc) issues.push({ title, description: desc });
+          });
+          return { issues };
+        case 'brand': return {
+          primaryColor: document.getElementById('web-primary-hex')?.value || '',
+          accentColor: document.getElementById('web-accent-hex')?.value || '',
+        };
+        case 'links': return {
+          donateUrl: document.getElementById('web-donate')?.value || '',
+          email: document.getElementById('web-email')?.value || '',
+          facebook: document.getElementById('web-facebook')?.value || '',
+          instagram: document.getElementById('web-instagram')?.value || '',
+        };
+        case 'endorsement': return {
+          name: document.getElementById('end-name')?.value || '',
+          title: document.getElementById('end-title')?.value || '',
+          quote: document.getElementById('end-quote')?.value || '',
+          date: document.getElementById('end-date')?.value || '',
+          isPublic: document.getElementById('end-public')?.value || 'no',
+        };
+        case 'other': return {
+          page: document.getElementById('change-page')?.value || '',
+          section: document.getElementById('change-section')?.value || '',
+          description: document.getElementById('change-description')?.value || '',
+        };
+        default: return {};
+      }
+    }
+
+    async function saveToSheet(publish) {
+      const section = currentEditSection;
+      if (!section) { showToast('Nothing to save'); return; }
+      const data = getFormDataForSection(section);
+
+      const btn = publish ? document.querySelector('.editor-btn.blue') : document.querySelector('.editor-btn:not(.blue):not(.danger):not(.small)');
+      if (btn) { btn.disabled = true; btn.textContent = publish ? 'Publishing...' : 'Saving...'; }
+
+      try {
+        const res = await fetch(UPDATE_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ section, data, publish: !!publish, sheetId: SHEET_ID })
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || 'Save failed');
+
+        if (publish) {
+          saveVersion(dashboardData.campaign);
+          showToast('Published! Site will update in a few seconds.');
+        } else {
+          showToast('Saved to campaign data.');
+        }
+
+        // Refresh dashboard data
+        setTimeout(() => fetchData(), 1500);
+      } catch (err) {
+        showToast('Error: ' + err.message);
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = publish ? 'Publish Changes' : 'Save Draft'; }
+      }
+    }
+
+    function saveDraft() { saveToSheet(false); }
+    function publishSite() { saveToSheet(true); }
+
+    function submitChangeRequest() {
+      const desc = document.getElementById('change-description')?.value;
+      if (!desc) { showToast('Please describe the change.'); return; }
+      // Save the change request to the Sheet
+      currentEditSection = 'other';
+      saveToSheet(false);
+      const preview = document.getElementById('change-preview');
+      if (preview) {
+        preview.style.display = 'block';
+        preview.innerHTML = '<div style="padding:12px;background:#ecfdf5;border-radius:8px;border:1px solid #a7f3d0;color:#065f46;"><strong>Change request submitted.</strong> Your account manager will review and apply it.</div>';
+      }
+    }
+
+    function restoreVersion(index) {
+      const versions = getVersionHistory();
+      if (!versions[index]) return;
+      if (!confirm('Restore this version? Current unsaved changes will be lost.')) return;
+      showToast('Version restored. Click Publish to make it live.');
+    }
+
+    function showToast(msg) {
+      let toast = document.getElementById('toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+    }
+
+    // ---- Website Editor Overlay ----
+    function openWebsiteEditor() {
+      const overlay = document.getElementById('websiteOverlay');
+      const body = document.getElementById('websiteOverlayBody');
+      body.innerHTML = renderWebsitePanel(dashboardData.campaign);
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWebsiteEditor() {
+      document.getElementById('websiteOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ---- Init ----
+    // Only fetch if authenticated
+    if (sessionStorage.getItem('ad_auth') === 'true') {
+      fetchData();
+    }
+  </script>
+
+  <!-- Website Editor Overlay (separate from dashboard flow) -->
+  <div class="website-overlay" id="websiteOverlay">
+    <div class="website-overlay-header">
+      <h2>Edit Your Website</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="website-overlay-close" onclick="saveDraft();showToast('Draft saved');">Save Draft</button>
+        <button class="website-overlay-close" style="background:#F0C040;color:var(--navy);border-color:#F0C040;font-weight:700;" onclick="publishSite()">Publish</button>
+        <button class="website-overlay-close" onclick="closeWebsiteEditor()">Close</button>
+      </div>
+    </div>
+    <div class="website-overlay-body" id="websiteOverlayBody"></div>
+  </div>
+
+  </div><!-- end dashboardApp -->
+
+  <script>
+    const VALID_PASSWORDS = ['arkanddove2026', 'michelle2026'];
+
+    function checkAuth() {
+      const pw = document.getElementById('authPassword').value.trim();
+      if (VALID_PASSWORDS.includes(pw)) {
+        sessionStorage.setItem('ad_auth', 'true');
+        document.getElementById('authGate').style.display = 'none';
+        document.getElementById('dashboardApp').style.display = 'block';
+        fetchData();
+      } else {
+        document.getElementById('authError').style.display = 'block';
+        document.getElementById('authPassword').style.borderColor = 'var(--red)';
+      }
+      return false;
+    }
+
+    // Auto-login if already authenticated this session
+    if (sessionStorage.getItem('ad_auth') === 'true') {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('dashboardApp').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
