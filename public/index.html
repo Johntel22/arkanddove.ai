@@ -20,7 +20,7 @@
   <header class="site-header" id="header">
     <nav class="nav container" aria-label="Main navigation">
       <a href="#hero" class="nav__logo" aria-label="Ark and Dove Campaigns home" style="display:flex; align-items:center; text-decoration:none;">
-        <img src="/logo-transparent.png" alt="Ark &amp; Dove Campaigns" class="nav__logo-img" />
+        <img src="/logo-transparent.png" alt="Ark &amp; Dove Campaigns" class="nav__logo-img" width="120" height="48" />
         <span class="nav__logo-text">Ark &amp; Dove</span>
       </a>
       <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu">
@@ -47,7 +47,6 @@
             <a href="#about" class="nav__dropdown-item">Why Ark &amp; Dove</a>
           </div>
         </li>
-        <li role="none"><a href="/dashboard.html" class="nav__link nav__link--gold" role="menuitem">Dashboard Login</a></li>
         <li role="none"><a href="https://calendar.app.google/vVVciTMvvsURW4fb6" target="_blank" rel="noopener" class="nav__link nav__link--cta" role="menuitem">Book a Demo</a></li>
       </ul>
     </nav>
@@ -328,32 +327,51 @@
       </div>
     </section>
 
+    <!-- Founder Spotlight -->
+    <section class="founder" id="founder">
+      <div class="container">
+        <div class="founder__inner fade-in">
+          <div class="founder__photo-wrap">
+            <img src="/assets/team/johntel-greene-headshot.jpg" alt="Johntel Greene, Founder of Ark &amp; Dove Campaigns" class="founder__photo" width="240" height="240" loading="lazy" decoding="async">
+          </div>
+          <div class="founder__content">
+            <p class="founder__eyebrow">From the Founder</p>
+            <h2 class="founder__title">I built Ark &amp; Dove because I watched too many good candidates lose before they started.</h2>
+            <p class="founder__body">I'm Johntel Greene. I've spent over a decade in politics as a registered lobbyist, campaign manager, and technology builder. I've sat in the same chairs you're sitting in now: scrambling to find a website vendor at 11pm, doing calltime in a spreadsheet, paying enterprise prices for tools built for U.S. Senate races when I was running a county race.</p>
+            <p class="founder__body">Ark &amp; Dove is the answer to a simple question: what if first-time candidates and downballot races had the same integrated stack the big races take for granted, at a price that doesn't bankrupt the campaign? We built it. It's here. Let's win your race.</p>
+            <p class="founder__signoff">- Johntel Greene, Founder &amp; CEO</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Our Team -->
     <section class="origin" id="team">
       <div class="container">
         <div class="origin__team fade-in">
-          <h2 class="section-title">Our Team</h2>
+          <h2 class="section-title">Experienced Campaign Professionals</h2>
+          <p class="origin__team-intro">Ark &amp; Dove brings together campaign managers, fundraisers, technologists, and data scientists who've worked on races at every level - from local school board to U.S. Senate, from Maryland to the Carolinas to Battleground States.</p>
           <div class="team__grid">
             <div class="team-member">
-              <img src="/assets/team/johntel-greene-headshot.png" alt="Johntel Greene" class="team-member__photo">
+              <img src="/assets/team/johntel-greene-headshot.jpg" alt="Johntel Greene" class="team-member__photo" width="192" height="192" loading="lazy" decoding="async">
               <div class="team-member__name">Johntel Greene</div>
               <div class="team-member__role">Founder &amp; CEO</div>
-              <p class="team-member__bio">16 years in Maryland politics as a registered lobbyist, political strategist, and technology builder. Founder of Good Governance Consulting and Good Gov AI. Has built campaign infrastructure, lobbied the Maryland General Assembly, and developed AI-powered tools now used by campaigns and advocacy organizations across the state.</p>
+              <p class="team-member__bio">Over a decade in Maryland politics as a registered lobbyist, political strategist, and technology builder. Founder of Good Governance Consulting and Good Gov AI. Has built campaign infrastructure, lobbied the Maryland General Assembly, and developed AI-powered tools now used by campaigns and advocacy organizations across the state.</p>
             </div>
             <div class="team-member">
-              <img src="/assets/team/michelle-ngwafon-headshot.jpg" alt="Michelle Ngwafon" class="team-member__photo">
+              <img src="/assets/team/michelle-ngwafon-headshot.jpg" alt="Michelle Ngwafon" class="team-member__photo" width="192" height="192" loading="lazy" decoding="async">
               <div class="team-member__name">Michelle Ngwafon</div>
               <div class="team-member__role">Chief Development Officer</div>
               <p class="team-member__bio">14+ years in Democratic politics, from Obama's campaigns to serving as South POD Deputy for Battleground States on the Harris-Walz ticket. Howard University alum with experience spanning organizing, political strategy, and fundraising. Former Midwest Regional Director at ActBlue, with work for Majority Whip Clyburn, Senator Tina Smith, AG Josh Stein, and Congressman Sarbanes. DMV native who's run campaigns across Maryland, Michigan, Minnesota, and the Carolinas.</p>
             </div>
             <div class="team-member">
-              <img src="/assets/team/rich-goldman-headshot.jpg" alt="Rich Goldman" class="team-member__photo">
+              <img src="/assets/team/rich-goldman-headshot.jpg" alt="Rich Goldman" class="team-member__photo" width="192" height="192" loading="lazy" decoding="async">
               <div class="team-member__name">Rich Goldman</div>
               <div class="team-member__role">Senior Technical Advisor</div>
               <p class="team-member__bio">Ph.D. in IT for Government Relations from Johns Hopkins University. Founder of AdvoKit and LegIT Systems. 15+ years building integrated political technology and legislative tracking tools deployed at the state level across the US.</p>
             </div>
             <div class="team-member">
-              <img src="/assets/team/minh-mai-headshot.jpg" alt="Minh Mai" class="team-member__photo">
+              <img src="/assets/team/minh-mai-headshot.jpg" alt="Minh Mai" class="team-member__photo" width="192" height="192" loading="lazy" decoding="async">
               <div class="team-member__name">Minh Mai</div>
               <div class="team-member__role">Senior AI &amp; Data Engineer</div>
               <p class="team-member__bio">Built data platforms that fueled GoodRx and CAVA from startup to IPO. One of the first data scientists in the political space, building ML platforms that model and predict voter behavior.</p>
@@ -367,7 +385,7 @@
     <section class="origin origin--story" id="about">
       <div class="container">
         <div class="origin__content fade-in">
-          <img src="/logo-transparent.png" alt="" class="origin__watermark" aria-hidden="true" />
+          <img src="/logo-transparent.png" alt="" class="origin__watermark" aria-hidden="true" loading="lazy" />
           <h2 class="section-title">Why "Ark &amp; Dove"</h2>
           <p>In 1634, the Ark and the Dove carried the first settlers to Maryland's shores. They were small ships with big ambitions, carrying people who believed they could build something new.</p>
           <p>That's the spirit behind this company. State and local campaigns are where democracy actually happens, and too many good candidates lose before they start because they can't access the tools and infrastructure the big races take for granted.</p>
@@ -382,11 +400,12 @@
   <footer class="footer">
     <div class="container footer__content">
       <div class="footer__brand">
-        <img src="/logo.png" alt="Ark &amp; Dove Campaigns" class="footer__logo-img" />
+        <img src="/logo.png" alt="Ark &amp; Dove Campaigns" class="footer__logo-img" width="120" height="48" loading="lazy" />
       </div>
       <div class="footer__links">
         <a href="https://goodgovernanceconsulting.com" target="_blank" rel="noopener">Good Governance Consulting</a>
         <a href="https://goodgov.ai" target="_blank" rel="noopener">Good Gov AI</a>
+        <a href="/dashboard.html">Client Login</a>
       </div>
       <p class="footer__copy">&copy; 2026 Ark &amp; Dove Campaigns, LLC. All rights reserved.</p>
     </div>
