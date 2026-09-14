@@ -1471,3 +1471,55 @@ body {
     font-size: 1.3rem;
   }
 }
+
+/* ---- On-this-page side nav ---- */
+.sidenav {
+  position: fixed;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  z-index: 90;
+  width: 160px;
+  padding: 0.75rem 0;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.sidenav.is-shown { opacity: 1; pointer-events: auto; }
+.sidenav__label {
+  padding: 0 1rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+.sidenav ul { list-style: none; margin: 0; padding: 0; }
+.sidenav a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 1rem;
+  color: var(--gray-600);
+  text-decoration: none;
+  line-height: 1.35;
+  transition: color 0.15s;
+}
+.sidenav a::before {
+  content: "";
+  flex: 0 0 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.15s;
+}
+.sidenav a:hover { color: var(--navy); }
+.sidenav a.is-active { color: var(--blue); font-weight: 600; }
+.sidenav a.is-active::before { background: var(--blue); }
+.sidenav__sub a { padding-left: 1.6rem; font-size: 0.74rem; }
+.sidenav__sub a::before { height: 10px; }
+@media (max-width: 1440px) { .sidenav { display: none; } }

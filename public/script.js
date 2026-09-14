@@ -83,3 +83,31 @@ document.querySelectorAll('.example').forEach(el => exampleObserver.observe(el))
     btns.forEach(x => x.classList.toggle('is-active', x === b));
   }));
 })();
+
+// On-this-page side nav: show after the hero, highlight the section in view
+(function () {
+  const nav = document.querySelector('.sidenav');
+  if (!nav) return;
+  const links = new Map();
+  nav.querySelectorAll('a[data-spy]').forEach(a => links.set(a.dataset.spy, a));
+  const targets = [...links.keys()].map(id => document.getElementById(id)).filter(Boolean);
+
+  function update() {
+    const line = window.innerHeight * 0.35;
+    let current = null;
+    for (const el of targets) {
+      if (el.getBoundingClientRect().top <= line) current = el.id; else break;
+    }
+    links.forEach((a, id) => a.classList.toggle('is-active', id === current));
+    // the parent "Examples" stays lit while any example is in view
+    if (current && current.startsWith('example-')) links.get('examples').classList.add('is-active');
+    nav.classList.toggle('is-shown', current !== null);
+  }
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { update(); ticking = false; });
+  }, { passive: true });
+  update();
+})();
