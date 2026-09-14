@@ -1,5 +1,48 @@
 // Ark & Dove Campaigns - Client Intake Function
-// Receives form submission, sends formatted email via Resend
+// Receives form submission, sends formatted email via Gmail API (as Johntel),
+// falls back to Resend if Gmail fails. Also pushes contact to GHL A&D sub-account.
+
+import { google } from 'googleapis';
+
+async function sendViaGmail({ from, to, replyTo, subject, html }) {
+  const auth = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET
+  );
+  auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+
+  const gmail = google.gmail({ version: 'v1', auth });
+
+  const headers = [
+    `From: ${from}`,
+    `To: ${to}`,
+    replyTo ? `Reply-To: ${replyTo}` : null,
+    `Subject: ${subject}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset=utf-8'
+  ].filter(Boolean);
+
+  const raw = Buffer.from(headers.join('\r\n') + '\r\n\r\n' + html)
+    .toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  await gmail.users.messages.send({ userId: 'me', requestBody: { raw } });
+}
+
+async function sendViaResend({ from, to, replyTo, subject, html }) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+    },
+    body: JSON.stringify({ from, to: [to], reply_to: replyTo, subject, html })
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Resend ${res.status}: ${errText}`);
+  }
+}
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -45,13 +88,17 @@ export const handler = async (event) => {
     facebook_url,
     instagram_handle,
     twitter_handle,
-    switchboard_account_id,
-    switchboard_secret_key,
-    ghl_api_key,
-    van_api_key,
+    services_needed,
+    services_other,
     additional_notes,
     referral_source
   } = body;
+
+  // services_needed comes as an array from multi-checkbox; normalize
+  const servicesList = Array.isArray(services_needed)
+    ? services_needed
+    : (services_needed ? [services_needed] : []);
+  const servicesDisplay = [...servicesList, services_other].filter(Boolean).join(', ');
 
   const officeFinal = office === 'Other' && office_other ? office_other : office;
   const candidateDisplay = candidate_name || '(unknown)';
@@ -124,8 +171,8 @@ export const handler = async (event) => {
 
                     ${section('Campaign Team', [
                       row('Campaign Manager', manager_name),
-                      row('Manager Email', manager_email),
-                      row('Manager Phone', manager_phone),
+                      row('Campaign Manager Email', manager_email),
+                      row('Campaign Manager Phone', manager_phone),
                       row('Treasurer', treasurer_name),
                       row('Campaign Email', campaign_email),
                       row('Campaign Phone', campaign_phone)
@@ -150,11 +197,8 @@ export const handler = async (event) => {
                       row('X (Twitter)', twitter_handle)
                     ])}
 
-                    ${section('Integrations', [
-                      row('Switchboard Account ID', switchboard_account_id),
-                      row('Switchboard Secret Key', switchboard_secret_key ? '(provided - see form submission)' : ''),
-                      row('GoHighLevel API Key', ghl_api_key ? '(provided - see form submission)' : ''),
-                      row('VAN API Key', van_api_key ? '(provided - see form submission)' : '')
+                    ${section('Services to Connect', [
+                      row('Services Requested', servicesDisplay || 'None specified')
                     ])}
 
                     ${section('Additional', [
@@ -169,7 +213,7 @@ export const handler = async (event) => {
               <!-- Footer -->
               <tr>
                 <td colspan="2" style="background: #0A2540; padding: 16px 28px; text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);">
-                  Ark &amp; Dove Campaigns, LLC - hello@arkandovecampaigns.com
+                  Ark &amp; Dove Campaigns, LLC - sales@arkanddove.ai - arkanddove.ai
                 </td>
               </tr>
 
@@ -181,34 +225,96 @@ export const handler = async (event) => {
     </html>
   `;
 
-  // Send via Resend
-  const resendRes = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
-    },
-    body: JSON.stringify({
-      from: 'Ark & Dove <notifications@send.jameskitchin.com>',
-      to: ['johntel.greene@gmail.com'],
-      cc: ['michelle@arkandovecampaigns.com'],
+  // Send notification email. Try Gmail (sends as Johntel) first, fall back to Resend.
+  let emailVia = 'gmail';
+  try {
+    await sendViaGmail({
+      from: 'Johntel Greene <johntel@goodgov.ai>',
+      to: 'sales@arkanddove.ai',
+      replyTo: 'sales@arkanddove.ai',
       subject,
       html: htmlBody
-    })
-  });
+    });
+  } catch (gmailErr) {
+    console.error('Gmail send failed, falling back to Resend:', gmailErr?.message || gmailErr);
+    emailVia = 'resend';
+    try {
+      await sendViaResend({
+        from: 'Johntel Greene <notifications@send.jameskitchin.com>',
+        to: 'sales@arkanddove.ai',
+        replyTo: 'sales@arkanddove.ai',
+        subject,
+        html: htmlBody
+      });
+    } catch (resendErr) {
+      console.error('Resend fallback also failed:', resendErr?.message || resendErr);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Failed to send notification email' })
+      };
+    }
+  }
 
-  if (!resendRes.ok) {
-    const errText = await resendRes.text();
-    console.error('Resend error:', errText);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to send notification email' })
+  // Push contact to GoHighLevel A&D sub-account. Non-blocking: any failure here
+  // is logged and surfaced in the response but does not fail the intake.
+  let ghlStatus = 'skipped';
+  const ghlToken = process.env.GHL_AD_API_KEY;
+  const ghlLocationId = process.env.GHL_AD_LOCATION_ID;
+
+  if (ghlToken && ghlLocationId) {
+    const nameParts = (candidate_name || '').trim().split(/\s+/);
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ');
+    const ghlPayload = {
+      locationId: ghlLocationId,
+      firstName,
+      lastName,
+      email: campaign_email || manager_email || undefined,
+      phone: campaign_phone || manager_phone || undefined,
+      source: 'arkanddove.ai intake',
+      tags: ['website-lead', 'arkandove-intake', 'demo-request'],
+      customFields: [
+        { key: 'office', field_value: officeFinal || '' },
+        { key: 'district', field_value: district || '' },
+        { key: 'state', field_value: state || '' },
+        { key: 'election_date', field_value: election_date || '' },
+        { key: 'party', field_value: party || '' }
+      ]
     };
+
+    try {
+      const ghlRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${ghlToken}`,
+          'Content-Type': 'application/json',
+          'Version': '2021-07-28',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(ghlPayload)
+      });
+
+      if (ghlRes.ok) {
+        ghlStatus = 'created';
+      } else {
+        const errBody = await ghlRes.text().catch(() => '');
+        console.error('GHL contact create failed:', ghlRes.status, errBody);
+        ghlStatus = `error_${ghlRes.status}`;
+      }
+    } catch (err) {
+      console.error('GHL contact create exception:', err);
+      ghlStatus = 'exception';
+    }
+  } else {
+    console.warn('GHL env vars missing - skipping contact push', {
+      hasToken: !!ghlToken,
+      hasLocationId: !!ghlLocationId
+    });
   }
 
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ success: true, message: 'Intake received' })
+    body: JSON.stringify({ success: true, message: 'Intake received', ghl: ghlStatus, email: emailVia })
   };
 };

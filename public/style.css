@@ -6,6 +6,18 @@
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Global image safety - prevent overflow on mobile, preserve aspect ratio */
+img { max-width: 100%; height: auto; display: block; }
+
+/* Prevent horizontal scroll on mobile - clip is stronger than hidden, also stops scroll cascade */
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+  width: 100%;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { overscroll-behavior-x: none; }
+
 :root {
   --navy: #0A2540;
   --blue: #2B7DE9;
@@ -44,11 +56,6 @@ body {
 
 /* ---- Animations ---- */
 .fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.fade-in {
   opacity: 1;
   transform: none;
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -56,7 +63,13 @@ body {
 
 .fade-in.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+}
+
+/* Honor user motion preferences and stop all transform animations on mobile
+   to avoid perceived "sliding" when sections enter the viewport. */
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
+  .fade-in { transition: none; transform: none; }
 }
 
 /* ---- Header ---- */
@@ -65,9 +78,13 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   z-index: 100;
   background: var(--navy);
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  /* GPU layer prevents subpixel jitter from iOS address bar show/hide */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .nav {
@@ -261,6 +278,9 @@ body {
 .hero {
   position: relative;
   min-height: 90vh;
+  /* Use small viewport height where supported - prevents resize-jump on iOS Safari
+     when the address bar shows/hides. svh = smallest viewport with chrome visible. */
+  min-height: 90svh;
   display: flex;
   align-items: center;
   padding: 8rem 0 6rem;
@@ -824,6 +844,77 @@ body {
   color: var(--white);
 }
 
+/* ---- Founder Spotlight ---- */
+.founder {
+  padding: 5rem 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.founder__inner {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 3rem;
+  align-items: start;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.founder__photo-wrap {
+  position: relative;
+}
+
+.founder__photo {
+  width: 240px;
+  height: 240px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid var(--navy);
+  display: block;
+}
+
+.founder__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.75rem;
+}
+
+.founder__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 1.25rem;
+}
+
+.founder__body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--gray-600);
+  margin-bottom: 1rem;
+}
+
+.founder__signoff {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-top: 1.25rem;
+}
+
+.origin__team-intro {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2.5rem;
+  max-width: 760px;
+}
+
 .team__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -839,17 +930,17 @@ body {
 }
 
 .team-member__photo {
-  width: 96px;
-  height: 96px;
-  max-width: 96px;
-  max-height: 96px;
+  width: 120px;
+  height: 120px;
+  max-width: 120px;
+  max-height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 1rem;
+  object-position: center top;
+  margin: 0 auto 1rem;
   border: 3px solid #E8F1FC;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  background: var(--navy);
 }
 
 .team-member__placeholder {
@@ -1078,8 +1169,44 @@ body {
     transform: none;
   }
 
+  /* Keep 2-col on tablet so the team section still reads as a team */
+  .team__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Phones - stack team to one column with comfortable spacing */
+@media (max-width: 600px) {
   .team__grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .founder {
+    padding: 3.5rem 0;
+  }
+
+  .founder__inner {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .founder__photo-wrap {
+    margin: 0 auto;
+  }
+
+  .founder__photo {
+    width: 180px;
+    height: 180px;
+  }
+
+  .founder__body {
+    text-align: left;
+    font-size: 1rem;
   }
 }
 
@@ -1289,6 +1416,27 @@ body {
 
   .hero__title {
     font-size: 1.5rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .team-member__photo {
+    width: 100px;
+    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .team-member {
+    padding: 1.25rem 1rem;
+  }
+
+  .footer__logo-img {
+    max-width: 160px;
+  }
+
+  .contact__logo {
+    width: 160px;
   }
 
   .services .section-title {

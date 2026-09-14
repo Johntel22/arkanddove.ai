@@ -8,6 +8,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body { overflow-x: hidden; max-width: 100%; }
+
     body {
       font-family: 'Inter', sans-serif;
       background: #F1F5F9;
@@ -17,8 +19,11 @@
       justify-content: center;
       min-height: 100vh;
       gap: 3rem;
-      padding: 2rem;
+      padding: 2rem 1rem;
+      -webkit-text-size-adjust: 100%;
     }
+
+    a { color: inherit; text-decoration: none; }
 
     h2 {
       font-family: 'Inter', sans-serif;
@@ -200,6 +205,60 @@
       .card { box-shadow: none; border: 0.5pt solid #E2E8F0; }
       h2 { display: none; }
     }
+
+    /* Mobile: scale the card to phone width while keeping 3.5:2 aspect ratio */
+    @media (max-width: 600px) {
+      body { gap: 2rem; padding: 1.5rem 1rem; }
+      h2 { font-size: 0.9rem; }
+
+      .card {
+        width: 100%;
+        max-width: 380px;
+        height: auto;
+        aspect-ratio: 3.5 / 2;
+        min-height: 200px;
+        padding: 0;
+      }
+
+      .card-front { padding: 1.25rem 1.1rem; }
+      .card-front__logo { gap: 0.6rem; }
+      .card-front__mark {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.05rem;
+      }
+      .card-front__brand { font-size: 0.85rem; }
+      .card-front__tagline { font-size: 0.6rem; margin-top: 0.2rem; }
+      .card-front__name { font-size: 1.2rem; margin-bottom: 0.15rem; }
+      .card-front__title { font-size: 0.75rem; }
+      .card-front__accent { width: 40%; height: 50%; }
+
+      .card-back { padding: 1.1rem; }
+      .card-back__info { gap: 0.4rem; }
+      .card-back__row {
+        font-size: 0.85rem;
+        gap: 0.55rem;
+        min-height: 24px;
+      }
+      .card-back__row svg { width: 14px; height: 14px; }
+      .card-back__row a {
+        min-height: 24px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .card-back__divider {
+        width: 2.5rem;
+        margin: 0.75rem 0;
+      }
+      .card-back__footer { gap: 0.55rem; margin-top: 0.6rem; }
+      .card-back__footer-mark {
+        width: 1.4rem;
+        height: 1.4rem;
+        font-size: 0.7rem;
+      }
+      .card-back__footer-text { font-size: 0.8rem; }
+      .card-back__footer-sub { font-size: 0.65rem; }
+    }
   </style>
 </head>
 <body>
@@ -226,15 +285,15 @@
     <div class="card-back__info">
       <div class="card-back__row">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
-        <span>johntel@goodgov.ai</span>
+        <a href="mailto:johntel@goodgov.ai">johntel@goodgov.ai</a>
       </div>
       <div class="card-back__row">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-        <span>(443) 253-4876</span>
+        <a href="tel:+14432534876">(443) 253-4876</a>
       </div>
       <div class="card-back__row">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        <span>arkandovecampaigns.com</span>
+        <a href="https://arkanddove.ai">arkanddove.ai</a>
       </div>
     </div>
     <div class="card-back__divider"></div>

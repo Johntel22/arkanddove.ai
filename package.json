@@ -1,0 +1,10 @@
+{
+  "name": "arkanddove-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Ark & Dove Campaigns website + Netlify functions",
+  "dependencies": {
+    "googleapis": "^144.0.0"
+  }
+}

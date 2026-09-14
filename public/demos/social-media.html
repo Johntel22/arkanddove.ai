@@ -8,6 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="demo-styles.css">
+  <style>
+    @media (max-width: 600px) {
+      .cycle-item .social-post { flex: 1 1 100% !important; min-width: 0; }
+    }
+  </style>
 </head>
 <body>
   <div class="demo-page">
@@ -49,7 +54,7 @@
         <div class="mockup">
           <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
           <div class="mockup__body" style="position:relative;min-height:240px">
-            <div class="cycle-item" style="display:flex;gap:10px">
+            <div class="cycle-item" style="display:flex;gap:10px;flex-wrap:wrap">
               <div class="social-post" style="flex:1">
                 <div class="social-post__image" style="background:#1E3A5F;height:100px;font-size:0.85rem">
                   <div style="text-align:center"><div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;margin-bottom:4px">Town Hall</div>School Funding<br>Thursday 6:30 PM</div>

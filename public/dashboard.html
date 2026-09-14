@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ark &amp; Dove - Campaign Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <title>Client Login - Ark &amp; Dove Campaigns</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { overflow-x: hidden; max-width: 100%; }
+    img, svg { max-width: 100%; height: auto; }
 
     :root {
       --navy: #0A2540;
@@ -63,18 +67,20 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .btn-refresh {
       background: transparent;
       border: 1px solid rgba(255,255,255,0.2);
       color: var(--white);
-      padding: 6px 14px;
+      padding: 8px 14px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s;
+      min-height: 36px;
     }
     .btn-refresh:hover { background: rgba(255,255,255,0.1); }
     .btn-refresh.loading { opacity: 0.5; pointer-events: none; }
@@ -82,12 +88,13 @@
       background: var(--gray-600);
       border: none;
       color: var(--gray-400);
-      padding: 6px 14px;
+      padding: 8px 14px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 13px;
       cursor: not-allowed;
       font-family: inherit;
       opacity: 0.5;
+      min-height: 36px;
     }
     .last-updated {
       font-size: 11px;
@@ -242,13 +249,14 @@
       background: none;
       border: 1px solid var(--gray-300);
       color: var(--gray-600);
-      padding: 6px 14px;
+      padding: 10px 16px;
       border-radius: 4px;
-      font-size: 13px;
+      font-size: 14px;
       cursor: pointer;
       font-family: inherit;
       margin-bottom: 20px;
       transition: background 0.15s;
+      min-height: 44px;
     }
     .btn-back:hover { background: var(--gray-100); }
 
@@ -411,10 +419,10 @@
       -webkit-overflow-scrolling: touch;
     }
     .tab-btn {
-      padding: 8px 16px;
-      border-radius: 20px;
+      padding: 10px 18px;
+      border-radius: 22px;
       border: none;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       font-family: inherit;
@@ -422,6 +430,7 @@
       background: var(--gray-200);
       color: var(--gray-600);
       transition: background 0.15s, color 0.15s;
+      min-height: 44px;
     }
     .tab-btn:hover { background: var(--gray-300); }
     .tab-btn.active {
@@ -454,7 +463,8 @@
     }
     .panel-stats {
       display: flex;
-      gap: 16px;
+      gap: 12px 16px;
+      flex-wrap: wrap;
     }
     .panel-stat {
       font-size: 12px;
@@ -466,10 +476,12 @@
     }
 
     /* Tables */
+    .table-scroll, [style*="overflow-x:auto"] { -webkit-overflow-scrolling: touch; }
     .data-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
+      min-width: 480px;
     }
     .data-table thead th {
       padding: 10px 16px;
@@ -539,13 +551,13 @@
 
     /* Website Card (in stats row) */
     .website-card {
-      background: linear-gradient(135deg, #FFF8E1 0%, #FFF3CD 100%);
+      background: #FFF8E1;
       border: 2px solid #F0C040;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: box-shadow 0.2s, border-color 0.2s;
       position: relative;
     }
-    .website-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(240,192,64,0.3); border-color: #D4A017; }
+    .website-card:hover { box-shadow: 0 6px 16px rgba(240,192,64,0.3); border-color: #D4A017; }
     .website-card-btn {
       margin-top: 8px;
       display: inline-block;
@@ -592,12 +604,14 @@
       background: none;
       border: 1px solid rgba(255,255,255,0.3);
       color: var(--white);
-      padding: 6px 16px;
+      padding: 8px 14px;
       border-radius: 6px;
       font-family: inherit;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
+      min-height: 40px;
+      white-space: nowrap;
     }
     .website-overlay-close:hover { background: rgba(255,255,255,0.1); }
     .website-overlay-body { max-width: 900px; margin: 0 auto; padding: 24px; }
@@ -614,7 +628,7 @@
     .edit-panel { padding: 24px; }
     .back-to-actions { background: none; border: none; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--blue); cursor: pointer; margin-bottom: 16px; padding: 0; }
     .back-to-actions:hover { color: var(--navy); }
-    .version-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 24px; border-top: 1px solid var(--gray-200); background: var(--gray-50); }
+    .version-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 20px; border-top: 1px solid var(--gray-200); background: var(--gray-50); }
     .version-bar-label { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
     @media (max-width: 768px) { .action-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .action-grid { grid-template-columns: 1fr; } }
@@ -627,28 +641,29 @@
     .editor-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
     .editor-field.full { grid-column: 1 / -1; }
     .editor-field label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
-    .editor-field input, .editor-field textarea, .editor-field select { padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 14px; color: var(--gray-800); outline: none; transition: border-color 0.2s; }
+    .editor-field input, .editor-field textarea, .editor-field select { padding: 10px 12px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 16px; color: var(--gray-800); outline: none; transition: border-color 0.2s; min-height: 44px; }
+    .editor-field textarea { min-height: 88px; }
     .editor-field input:focus, .editor-field textarea:focus, .editor-field select:focus { border-color: var(--blue); }
     .editor-field textarea { resize: vertical; }
     .color-picker-row { display: flex; align-items: center; gap: 8px; }
     .color-picker-row input[type="color"] { width: 40px; height: 40px; border: 2px solid var(--gray-200); border-radius: 8px; padding: 2px; cursor: pointer; }
     .file-upload-area { display: flex; align-items: center; gap: 12px; }
     .file-preview { font-size: 13px; color: var(--gray-400); padding: 8px 12px; background: var(--gray-100); border-radius: 6px; flex: 1; }
-    .editor-btn { padding: 10px 20px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--gray-700); background: var(--white); cursor: pointer; transition: all 0.15s; }
+    .editor-btn { padding: 12px 20px; border: 2px solid var(--gray-200); border-radius: 8px; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--gray-700); background: var(--white); cursor: pointer; transition: all 0.15s; min-height: 44px; }
     .editor-btn:hover { border-color: var(--navy); color: var(--navy); }
     .editor-btn.blue { background: var(--blue); color: var(--white); border-color: var(--blue); }
     .editor-btn.blue:hover { background: #1a6dd4; }
     .editor-btn.danger { color: var(--red); border-color: var(--red); }
     .editor-btn.danger:hover { background: #fef2f2; }
-    .editor-btn.small { padding: 6px 14px; font-size: 13px; }
+    .editor-btn.small { padding: 8px 14px; font-size: 13px; min-height: 36px; }
     .editor-actions { display: flex; gap: 12px; justify-content: flex-end; padding: 16px 0; }
     .issue-editor { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; padding: 12px; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200); }
     .issue-number { width: 28px; height: 28px; background: var(--navy); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
     .issue-fields { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-    .issue-title-input, .issue-desc-input { padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 14px; outline: none; }
+    .issue-title-input, .issue-desc-input { padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 16px; outline: none; width: 100%; }
     .issue-title-input:focus, .issue-desc-input:focus { border-color: var(--blue); }
     .version-list { display: flex; gap: 8px; flex-wrap: wrap; }
-    .version-btn { padding: 6px 14px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 12px; color: var(--gray-600); background: var(--gray-50); cursor: pointer; transition: all 0.15s; }
+    .version-btn { padding: 8px 14px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 13px; color: var(--gray-600); background: var(--gray-50); cursor: pointer; transition: all 0.15s; min-height: 36px; }
     .version-btn:hover { border-color: var(--blue); color: var(--blue); }
 
     @media (max-width: 768px) {
@@ -662,42 +677,60 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .header { padding: 0 16px; }
+      .header { padding: 0 14px; }
       .header-center { display: none; }
+      .last-updated { padding: 6px 14px; text-align: left; }
       .container { padding: 16px; }
       .stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .campaign-header { flex-direction: column; text-align: center; gap: 16px; }
+      .campaign-header { flex-direction: column; text-align: center; gap: 16px; padding: 20px; }
       .campaign-header-right { text-align: center; }
       .campaign-grid { grid-template-columns: 1fr; }
-      .panel-header { flex-direction: column; gap: 8px; align-items: flex-start; }
-      .tabs-bar { gap: 2px; }
-      .tab-btn { padding: 6px 12px; font-size: 12px; }
-      .data-table { font-size: 12px; }
-      .data-table thead th, .data-table tbody td { padding: 8px 10px; }
-      .endorsement-grid { grid-template-columns: 1fr; }
+      .panel-header { flex-direction: column; gap: 8px; align-items: flex-start; padding: 14px 16px; }
+      .tabs-bar { gap: 4px; }
+      .tab-btn { padding: 10px 14px; font-size: 14px; min-height: 44px; }
+      .data-table { font-size: 13px; }
+      .data-table thead th, .data-table tbody td { padding: 10px 12px; }
+      .endorsement-grid { grid-template-columns: 1fr; padding: 16px; }
+      .website-overlay-header { padding: 0 14px; }
+      .website-overlay-header h2 { font-size: 14px; }
+      .website-overlay-body { padding: 16px; }
+      .action-picker { padding: 16px; }
+      .website-editor { padding: 12px; }
+      .editor-section { padding: 16px; }
+      .card-metric-label { width: 70px; font-size: 11px; }
+      .card-metric-value { width: 80px; font-size: 11px; }
     }
 
     @media (max-width: 480px) {
       .stats-row { grid-template-columns: 1fr; }
       .big-days { font-size: 36px; }
+      .header-brand { font-size: 13px; letter-spacing: 0.08em; }
+      .btn-new-campaign { display: none; }
+      .website-overlay-header h2 { display: none; }
+      .card-metric { flex-wrap: wrap; }
+      .card-metric-label { width: 100%; margin-bottom: 2px; }
+      .card-metric-value { width: auto; flex: 0 0 auto; }
+      .card-metric-bar { flex: 1; min-width: 60px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Password Gate -->
+  <!-- Client Login Gate -->
   <div id="authGate" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--gray-50);">
-    <div style="background:var(--white);border-radius:8px;box-shadow:var(--shadow-md);border:1px solid var(--gray-200);padding:40px;max-width:380px;width:100%;text-align:center;">
+    <div style="background:var(--white);border-radius:8px;box-shadow:var(--shadow-md);border:1px solid var(--gray-200);padding:40px;max-width:420px;width:100%;text-align:center;">
       <div style="font-size:24px;font-weight:800;color:var(--navy);margin-bottom:4px;font-family:serif;">A&amp;D</div>
-      <h2 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px;">Campaign Dashboard</h2>
-      <p style="font-size:13px;color:var(--gray-500);margin-bottom:24px;">Enter your password to continue</p>
+      <div style="font-size:11px;font-weight:700;color:var(--blue);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">Ark &amp; Dove Campaigns</div>
+      <h2 style="font-size:20px;font-weight:700;color:var(--navy);margin-bottom:6px;">Client Login</h2>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:24px;line-height:1.5;">For current Ark &amp; Dove clients. Sign in to view your campaign dashboard.</p>
       <form onsubmit="return checkAuth()">
         <input type="password" id="authPassword" placeholder="Password" autofocus
-          style="width:100%;padding:12px 16px;border:2px solid var(--gray-200);border-radius:6px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color 0.2s;"
+          style="width:100%;padding:14px 16px;border:2px solid var(--gray-200);border-radius:6px;font-size:16px;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color 0.2s;min-height:48px;"
           onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--gray-200)'" />
         <button type="submit" style="width:100%;padding:12px;background:var(--navy);color:var(--white);border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.02em;">Sign In</button>
       </form>
       <p id="authError" style="color:var(--red);font-size:13px;margin-top:12px;display:none;">Incorrect password</p>
+      <p style="font-size:12px;color:var(--gray-500);margin-top:28px;padding-top:20px;border-top:1px solid var(--gray-200);">Not a client yet? <a href="/" style="color:var(--blue);text-decoration:none;font-weight:600;">Learn about Ark &amp; Dove</a> or <a href="https://calendar.app.google/vVVciTMvvsURW4fb6" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;font-weight:600;">book a demo</a>.</p>
     </div>
   </div>
 

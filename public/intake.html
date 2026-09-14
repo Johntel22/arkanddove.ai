@@ -686,33 +686,28 @@
         </div>
       </div>
 
-      <!-- SECTION 6: Integrations -->
+      <!-- SECTION 6: Services to Connect -->
       <div class="form-section">
-        <div class="section-header">Section 6 - Integrations (Optional)</div>
+        <div class="section-header">Section 6 - Services to Connect (Optional)</div>
         <div class="section-body">
           <div class="section-note">
-            If you already use any of these tools, share your credentials so we can connect them to your dashboard. If not, no worries - we can set them up later.
+            Which services do you need connected to your dashboard? Check anything that applies. We'll handle the technical setup after onboarding. Not sure? Leave it blank, we'll figure it out on our call.
           </div>
           <div class="field-grid">
 
-            <div class="field">
-              <label for="switchboard_account_id">Switchboard Account ID</label>
-              <input type="text" id="switchboard_account_id" name="switchboard_account_id" />
+            <div class="field field-full">
+              <label>Services I want connected</label>
+              <div class="checkbox-row"><input type="checkbox" id="svc_switchboard" name="services_needed" value="Switchboard" /><label for="svc_switchboard">Switchboard (peer-to-peer texting and email)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="svc_ghl" name="services_needed" value="GoHighLevel" /><label for="svc_ghl">GoHighLevel (CRM and automation)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="svc_van" name="services_needed" value="VAN / VoteBuilder" /><label for="svc_van">VAN / VoteBuilder (voter file and field)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="svc_actblue" name="services_needed" value="ActBlue" /><label for="svc_actblue">ActBlue (donations)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="svc_mobilize" name="services_needed" value="Mobilize" /><label for="svc_mobilize">Mobilize (event RSVPs)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="svc_help" name="services_needed" value="Not sure - help me figure it out" /><label for="svc_help">Not sure yet - help me figure out what I need</label></div>
             </div>
 
-            <div class="field">
-              <label for="switchboard_secret_key">Switchboard Secret Key</label>
-              <input type="password" id="switchboard_secret_key" name="switchboard_secret_key" autocomplete="off" />
-            </div>
-
-            <div class="field">
-              <label for="ghl_api_key">GoHighLevel API Key</label>
-              <input type="password" id="ghl_api_key" name="ghl_api_key" autocomplete="off" />
-            </div>
-
-            <div class="field">
-              <label for="van_api_key">VAN / VoteBuilder API Key</label>
-              <input type="password" id="van_api_key" name="van_api_key" autocomplete="off" />
+            <div class="field field-full">
+              <label for="services_other">Other tools you need connected</label>
+              <input type="text" id="services_other" name="services_other" placeholder="e.g. NationBuilder, Action Network, Hustle, anything else" />
             </div>
 
           </div>
@@ -750,7 +745,7 @@
       <div class="submit-area">
         <button type="submit" id="submit-btn">Submit - We'll Have Your Campaign Ready in 24 Hours</button>
         <p class="required-note">Fields marked <span style="color: var(--blue);">*</span> are required.</p>
-        <div class="form-error" id="form-error">Something went wrong. Please try again or email hello@arkandovecampaigns.com</div>
+        <div class="form-error" id="form-error">Something went wrong. Please try again or email sales@arkanddove.ai</div>
       </div>
 
     </form>
@@ -765,7 +760,7 @@
         <li><strong>Your campaign operations are ready to go</strong> - volunteers, donors, turf, events, everything.</li>
       </ol>
       <div class="success-contact">
-        Questions? Email <a href="mailto:hello@arkandovecampaigns.com">hello@arkandovecampaigns.com</a>
+        Questions? Email <a href="mailto:sales@arkanddove.ai">sales@arkanddove.ai</a>
       </div>
     </div>
 
@@ -773,7 +768,7 @@
 
   <footer class="site-footer">
     <div>Ark &amp; Dove Campaigns, LLC</div>
-    <div><a href="mailto:hello@arkandovecampaigns.com">hello@arkandovecampaigns.com</a></div>
+    <div><a href="mailto:sales@arkanddove.ai">sales@arkanddove.ai</a></div>
   </footer>
 
   <script>
@@ -838,11 +833,15 @@
       submitBtn.textContent = 'Submitting...';
       formError.style.display = 'none';
 
-      // Collect form data
+      // Collect form data. Duplicate keys (multi-checkbox) accumulate into arrays.
       const data = {};
       const formData = new FormData(form);
       for (const [key, value] of formData.entries()) {
-        data[key] = value;
+        if (key in data) {
+          data[key] = Array.isArray(data[key]) ? [...data[key], value] : [data[key], value];
+        } else {
+          data[key] = value;
+        }
       }
 
       try {

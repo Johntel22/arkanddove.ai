@@ -17,6 +17,13 @@
       <p>Professional, mobile-first sites that launch fast and convert visitors into supporters, donors, and volunteers.</p>
     </div>
 
+    <div class="persona-switcher" role="tablist" aria-label="Race type">
+      <button type="button" class="persona-btn is-active" data-persona="city">City Council</button>
+      <button type="button" class="persona-btn" data-persona="school">School Board</button>
+      <button type="button" class="persona-btn" data-persona="county">County Council</button>
+      <button type="button" class="persona-btn" data-persona="state">State Legislature</button>
+    </div>
+
     <div class="steps">
       <!-- Step 1 -->
       <div class="step">
@@ -52,9 +59,9 @@
         <div class="mockup">
           <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
           <div class="mockup__body" style="padding:0">
-            <div style="background:#1E3A5F;padding:1.5rem;color:white;text-align:center">
-              <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700">Sarah Chen for City Council</div>
-              <div style="font-size:0.75rem;opacity:0.7;margin-top:0.25rem">District 4 | Building Stronger Neighborhoods</div>
+            <div class="persona-hero" style="background:#1E3A5F;padding:1.5rem;color:white;text-align:center">
+              <div class="persona-name" style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700">Sarah Chen for City Council</div>
+              <div class="persona-tag" style="font-size:0.75rem;opacity:0.7;margin-top:0.25rem">District 4 | Building Stronger Neighborhoods</div>
             </div>
             <div style="padding:1rem">
               <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:0.75rem">
@@ -79,8 +86,8 @@
         <div class="mockup" style="max-width:220px;margin:0 auto">
           <div class="mockup__bar"><span class="mockup__dot"></span><span class="mockup__dot"></span><span class="mockup__dot"></span></div>
           <div class="mockup__body" style="padding:0">
-            <div style="background:#1E3A5F;padding:1rem;color:white;text-align:center">
-              <div style="font-size:0.9rem;font-weight:700">S. Chen</div>
+            <div class="persona-hero-mobile" style="background:#1E3A5F;padding:1rem;color:white;text-align:center">
+              <div class="persona-name-mobile" style="font-size:0.9rem;font-weight:700">S. Chen</div>
             </div>
             <div style="padding:0.75rem">
               <div class="typing-line" style="animation-delay:0.2s"></div>
@@ -124,5 +131,70 @@
       <a href="/#contact" class="btn">Start Your Campaign</a>
     </div>
   </div>
+
+  <style>
+    .persona-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+      max-width: 720px;
+    }
+    .persona-btn {
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border: 1.5px solid #CBD5E1;
+      background: white;
+      color: #475569;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s;
+      min-height: 40px;
+    }
+    .persona-btn:hover { border-color: #2B7DE9; color: #0A2540; }
+    .persona-btn.is-active {
+      background: #0A2540;
+      color: white;
+      border-color: #0A2540;
+    }
+    @media (max-width: 600px) {
+      .persona-btn { font-size: 0.8rem; padding: 8px 14px; min-height: 36px; }
+    }
+  </style>
+
+  <script>
+    (function() {
+      var personas = {
+        city:   { name: 'Sarah Chen for City Council',     tag: 'District 4 | Building Stronger Neighborhoods', short: 'S. Chen',     color: '#1E3A5F' },
+        school: { name: 'Maria Rodriguez for School Board', tag: 'Plano ISD | Every Child, Every Classroom',     short: 'M. Rodriguez', color: '#065F46' },
+        county: { name: 'Robert Okonkwo for County Council', tag: 'Fulton County | Common-Sense Leadership',      short: 'R. Okonkwo',  color: '#B91C1C' },
+        state:  { name: 'David Chen for State House',       tag: 'PA-128 | Real Solutions for Working Families',  short: 'D. Chen',     color: '#7C3AED' }
+      };
+      var nameEl  = document.querySelector('.persona-name');
+      var tagEl   = document.querySelector('.persona-tag');
+      var heroEl  = document.querySelector('.persona-hero');
+      var mNameEl = document.querySelector('.persona-name-mobile');
+      var mHeroEl = document.querySelector('.persona-hero-mobile');
+      var btns    = document.querySelectorAll('.persona-btn');
+
+      function apply(key) {
+        var p = personas[key];
+        if (!p) return;
+        nameEl.textContent  = p.name;
+        tagEl.textContent   = p.tag;
+        heroEl.style.background  = p.color;
+        mNameEl.textContent = p.short;
+        mHeroEl.style.background = p.color;
+        btns.forEach(function(b) { b.classList.toggle('is-active', b.dataset.persona === key); });
+      }
+
+      btns.forEach(function(b) {
+        b.addEventListener('click', function() { apply(b.dataset.persona); });
+      });
+    })();
+  </script>
 </body>
 </html>
